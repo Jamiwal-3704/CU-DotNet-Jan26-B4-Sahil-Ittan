@@ -22,6 +22,13 @@ namespace HeightApplication
             Inches = inches;
         }
 
+        // constructor with only inches
+        public Height(double inches)
+        {
+            Feet = (int)(inches / 12);
+            Inches = inches % 12;
+        }
+
         // method to add heights
         public Height AddHeights(Height h2)
         {
@@ -51,6 +58,8 @@ internal class Program
     {
         Height person1 = new Height(5, 6.5);
         Height person2 = new Height(5, 7.5);
+        Height person3 = new Height(70.0); // 70 inches
+        Console.WriteLine(person3); 
 
         // Add heights
         Height totalHeight = person1.AddHeights(person2);
