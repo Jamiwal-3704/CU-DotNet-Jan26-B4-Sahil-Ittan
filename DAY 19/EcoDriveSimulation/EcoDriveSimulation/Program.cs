@@ -2,21 +2,15 @@
 {
     internal class Program
     {
-
         abstract class Vehicle
         {
             public string ModelName { get; set; }
-
-
             public abstract void Move();
-
             public virtual string GetFuelStatus()
             {
                 return "Fuel level is stable";
             }
-
         }
-
         class ElectricCar : Vehicle
         {
             public override void Move()
@@ -57,7 +51,7 @@
         static void Main(string[] args)
         {
             Vehicle[] fleet =
-           {
+            {
                 new ElectricCar { ModelName = "Tesla Model X" },
                 new HeavyTruck { ModelName = "Volvo FH16" },
                 new CargoPlane { ModelName = "Boeing 747 Freighter" }
