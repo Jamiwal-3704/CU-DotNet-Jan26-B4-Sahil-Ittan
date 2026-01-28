@@ -166,8 +166,6 @@ namespace LoanEMICalculation
             loans[2] = cl1;
             loans[3] = cl2;
 
-
-
             for (int i = 0; i < loans.Length; i++)
             {
                 Console.WriteLine(loans[i].EmiCalculator());
