@@ -118,7 +118,7 @@ namespace LoanEMICalculation
             this.Tenure = tenure;
         }
 
-        public decimal EmiCalculator()
+        public virtual decimal EmiCalculator()
         {
             float rateOfInterest = 10 / 100;
             decimal Result = (PrincipalAmount + (PrincipalAmount * (decimal)rateOfInterest)) / Tenure;
@@ -129,7 +129,7 @@ namespace LoanEMICalculation
     {
         public HomeLoan(string loanNumber, string customerName, decimal principalAmount, int tenure) : base(loanNumber, customerName, principalAmount, tenure)
         { }
-        public new decimal EmiCalculator()
+        public override decimal EmiCalculator()
         {
             float rateOfInterest = 8 / 100;
             decimal Result = ((PrincipalAmount + (PrincipalAmount * (decimal)rateOfInterest)) / Tenure) + PrincipalAmount * (decimal)0.01;
@@ -142,7 +142,7 @@ namespace LoanEMICalculation
     {
         public CarLoan(string loanNumber, string customerName, decimal principalAmount, int tenure) : base(loanNumber, customerName, principalAmount, tenure)
         { }
-        public new decimal EmiCalculator()
+        public override decimal EmiCalculator()
         {
             float rateOfInterest = 9 / 100;
             decimal Result = ((PrincipalAmount + (PrincipalAmount * (decimal)rateOfInterest)) / Tenure) + PrincipalAmount * (decimal)0.005;
@@ -157,10 +157,17 @@ namespace LoanEMICalculation
         public static void Main()
         {
             Loan[] loans = new Loan[2];
-            HomeLoan hl = new HomeLoan("150001", "Alice", 500000, 10);
-            CarLoan cl = new CarLoan("250001", "Bob", 500000, 10);
-            loans[0] = hl;
-            loans[1] = cl;
+            HomeLoan hl1 = new HomeLoan("150001", "Alice", 500000, 10);
+            HomeLoan hl2 = new HomeLoan("150001", "Alice", 500000, 10);
+            CarLoan cl1 = new CarLoan("250001", "Bob", 500000, 10);
+            CarLoan cl2 = new CarLoan("250001", "Bob", 500000, 10);
+            loans[0] = hl1;
+            loans[1] = hl2;
+            loans[2] = cl1;
+            loans[3] = cl2;
+
+
+
             for (int i = 0; i < loans.Length; i++)
             {
                 Console.WriteLine(loans[i].EmiCalculator());
