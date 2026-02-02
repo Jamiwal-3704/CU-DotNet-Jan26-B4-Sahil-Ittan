@@ -31,7 +31,7 @@ namespace StMemorialBillingEngine
             totalBill = base.CalculateFinalBill() + (DaysStayed * DailyRate);
             return totalBill;
         }
-        public virtual string GetBillBreakdown()
+        public virtual new string GetBillBreakdown()
         {
             return $"Base Fee: {BaseFee.ToString("C2")}";
         }
@@ -73,7 +73,6 @@ namespace StMemorialBillingEngine
                 $"Base Fee: {BaseFee.ToString("C2")}\n" +
                 $"Severity Level: {SeverityLevel} × Base Fee";
         }
-
     }
 
     public class HospitalBilling
