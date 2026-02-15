@@ -1,0 +1,105 @@
+🧠 Skill Balance Challenge
+
+You are participating in multiple coding contests.
+Each contest is defined by two values:
+
+SkillPoints → Points gained if you lose the contest
+
+Priority
+
+1 → Important contest
+
+0 → Unimportant contest
+
+Rules
+
+You may lose at most k important contests.
+
+Losing a contest adds SkillPoints.
+
+Winning a contest subtracts SkillPoints.
+
+You may lose all unimportant contests freely.
+
+🎯 Objective:
+Maximize your total Skill Balance.
+
+🔹 Function Signature
+public static int skillBalance(int k, List<List<int>> contests)
+
+Parameters
+
+k → Maximum number of important contests you are allowed to lose
+
+contests[i] → A list of two integers:
+
+contests[i][0] = SkillPoints
+
+contests[i][1] = Priority (0 or 1)
+
+Returns
+
+An integer representing the maximum possible Skill Balance
+
+🔹 Sample Input
+int k = 2;
+
+List<List<int>> contests = new List<List<int>>()
+{
+    new List<int>{10, 1},
+    new List<int>{5, 1},
+    new List<int>{8, 1},
+    new List<int>{7, 0},
+    new List<int>{4, 0}
+};
+
+🔹 Explanation
+Step 1: Separate contests by priority
+SkillPoints	Priority	Contest Type
+10	1	Important
+5	1	Important
+8	1	Important
+7	0	Unimportant
+4	0	Unimportant
+Step 2: Handle unimportant contests
+
+You can lose all unimportant contests:
+
++7 + 4 = +11
+
+Step 3: Handle important contests
+
+You may lose at most k = 2 important contests.
+
+Sort important contests by SkillPoints in descending order:
+
+10, 8, 5
+
+
+Lose the top k contests:
+
++10 + 8 = +18
+
+
+Win the remaining contest:
+
+-5
+
+Step 4: Calculate final Skill Balance
+Category	Points
+Unimportant contests	+11
+Important contests	+18 − 5 = +13
+✅ Final Skill Balance
+11 + 13 = 24
+
+🧪 Expected Output
+24
+
+🧩 Task for Candidate
+
+Implement the following method to compute the maximum Skill Balance:
+
+public static int skillBalance(int k, List<List<int>> contests)
+{
+    // Your code here
+}
