@@ -282,9 +282,10 @@ namespace LinqPractice
             var posts = new List<Post>
             {
                 new Post{UserId=1, Likes=100},
-                new Post{UserId=1, Likes=50}
+                new Post{UserId=1, Likes=750},
+                new Post{UserId=2, Likes= 650}
             };
-
+            
             Console.WriteLine("\nUser Likes:");
             var likes = users.GroupJoin(
                 posts,
