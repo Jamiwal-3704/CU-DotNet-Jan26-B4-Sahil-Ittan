@@ -1,0 +1,64 @@
+DAY16-01 SOLUTION
+
+public static class ApplicationConfig 
+{
+	static string ApplicationName {get; set;}
+	static string Enviornment {get; set;}
+	static int AccessCount {get; set;}
+	static bool IsInitiliz {get; set;}
+
+	public static ApplicationConfig()
+	{
+	   	static string ApplicationName = "MyApp";
+	  	static string Enviornment = "Development";
+	   	static int AccessCount = 0;
+	   	static bool IsInitiliz = false;
+	}
+
+	public static void Initialize (string appName, String enviornment)
+	{
+	   	ApplicationName = appName;
+	   	Enviornment = enviornment;
+		IsInitiliz = true;
+		AccessCount ++;
+	}
+
+	public static void GetConfigurationSummary()
+	{
+		AccessCount++;
+		return "$ appName : {ApplicationName}, enviornment : {Enviornment}, accessCount : {AccessCount}, Initialization_Status : {IsInitiliz}";
+	}	
+
+	public static void RestConfiguration()
+	{
+		// set all values back to default
+	   	static string ApplicationName = "MyApp";
+	  	static string Enviornment = "Development";
+	   	static int AccessCount = 0;
+	   	static bool IsInitiliz = false;	
+	}
+}
+
+	public static void Main(string[] args)
+	{
+	
+		Console.WriteLine($"appName (before Init) : ApplicationConfig.ApplicationName ");
+
+		string AppNaming = "NewApplication";
+		string EnvNaming = "NewEnviornment";
+		ApplicationConfig.Initialize(AppNaming, EnvNaming);
+		string getConfig = ApplicationConfig.GetConfigurationSummary();
+		Console.WriteLine("GetConfig : " + getConfig);
+             	string answer = ApplicationConfig.ResetConfiguration();			
+	
+	}
+
+
+
+
+
+
+
+
+
+

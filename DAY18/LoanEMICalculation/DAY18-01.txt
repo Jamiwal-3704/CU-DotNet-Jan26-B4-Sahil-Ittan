@@ -1,0 +1,48 @@
+DAY18-01
+
+Case Study: Loan EMI Calculation System
+A bank is building an EMI (Equated Monthly Installment) calculation module for different loan products.
+All loans share common data, but EMI calculation rules differ by loan type. Due to legacy constraints, the system must not use polymorphism (virtual/override).
+
+Functional Requirements
+1. Base Class: Loan
+
+Create a base class named Loan.
+Properties
+LoanNumber (string)
+CustomerName (string)
+PrincipalAmount (decimal)
+TenureInYears (int)
+Constructor
+
+Initialize all properties using a parameterized constructor.
+
+create CalculateEMI method.
+to return 10% interest simple.
+
+Derived Class: HomeLoan
+Inherit from Loan.
+Business Rules
+Flat interest rate: 8%
+One-time processing fee: 1% of PrincipalAmount
+
+Derived Class: CarLoan
+Inherit from Loan.
+Business Rules
+Flat interest rate: 9%
+Insurance charge: ₹15,000 (added to principal)
+
+Can we create a member again in derived class 
+with same name? Yes
+Warning -  Hiding base class member
+
+Create 2 Home Loan objects
+Create 2 Car Loan Objects
+Add all in an array.
+call CalculateEMI on all objects using loop
+
+In this try to understand,
+each object is calling base class method.
+
+
+

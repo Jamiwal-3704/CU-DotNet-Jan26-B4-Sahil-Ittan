@@ -1,0 +1,253 @@
+DAY-25-02
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+namespace CricketPlayerPerformanceTracker
+{
+    internal class Player
+    {
+        // Properties
+        public string Name { get; set; }
+        public int RunsScored { get; set; }
+        public int BallsFaced { get; set; }
+        public bool IsOut { get; set; }
+        
+        // Calculated properties
+        public double StrikeRate 
+        { 
+            get 
+            {
+                if (BallsFaced == 0)
+                    return 0;
+                return (Math.Round((double)RunsScored / BallsFaced * 100, 2));
+            }
+        }
+        
+        public double Average 
+        { 
+            get 
+            {
+                if (!IsOut)
+                    return RunsScored;  // Not out - average equals runs scored
+                return (double)RunsScored;  // Out once in this innings
+            }
+        }
+    }
+
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("=== Cricket Player Performance Tracker ===\n");
+            Console.WriteLine("HackerLand Cricket League - Player Statistics\n");
+
+            // Prompt user for CSV file path
+            Console.Write("Enter the path to the CSV file: ");
+            string filePath = Console.ReadLine();
+
+            try
+            {
+                // Process the file and get valid players
+                List<Player> players = ProcessCsvFile(filePath);
+                
+                // Filter players with less than 10 balls faced
+                players = players.Where(p => p.BallsFaced >= 10).ToList();
+                
+                // Sort by Strike Rate in descending order
+                players = players.OrderByDescending(p => p.StrikeRate).ToList();
+                
+                // Display results
+                DisplayResults(players);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nAn error occurred: {ex.Message}");
+            }
+
+            Console.WriteLine("\nPress any key to exit...");
+            Console.ReadKey();
+        }
+
+        static List<Player> ProcessCsvFile(string filePath)
+        {
+            List<Player> players = new List<Player>();
+            int lineNumber = 0;
+
+            try
+            {
+                // Check if file exists
+                if (!File.Exists(filePath))
+                {
+                    throw new FileNotFoundException($"The file '{filePath}' was not found.");
+                }
+
+                // Read all lines from the file
+                string[] lines = File.ReadAllLines(filePath);
+                
+                Console.WriteLine($"\nProcessing {lines.Length} records...\n");
+
+                foreach (string line in lines)
+                {
+                    lineNumber++;
+                    
+                    // Skip empty lines
+                    if (string.IsNullOrWhiteSpace(line))
+                        continue;
+
+                    try
+                    {
+                        // Parse the line
+                        Player player = ParsePlayerFromLine(line, lineNumber);
+                        
+                        if (player != null)
+                        {
+                            players.Add(player);
+                            Console.WriteLine($"✓ Added: {player.Name} - {player.RunsScored} runs, {player.BallsFaced} balls");
+                        }
+                    }
+                    catch (FormatException ex)
+                    {
+                        Console.WriteLine($"⚠ Line {lineNumber}: Data format error - {ex.Message}");
+                    }
+                    catch (DivideByZeroException ex)
+                    {
+                        Console.WriteLine($"⚠ Line {lineNumber}: Calculation error - {ex.Message}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"⚠ Line {lineNumber}: Unexpected error - {ex.Message}");
+                    }
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                throw; // Re-throw to be handled in Main
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error reading file: {ex.Message}");
+            }
+
+            return players;
+        }
+
+        static Player ParsePlayerFromLine(string line, int lineNumber)
+        {
+            // Split the line by comma
+            string[] parts = line.Split(',');
+            
+            // Check if we have exactly 4 parts
+            if (parts.Length != 4)
+            {
+                throw new FormatException($"Expected 4 values, found {parts.Length}");
+            }
+
+            // Trim whitespace from each part
+            for (int i = 0; i < parts.Length; i++)
+            {
+                parts[i] = parts[i].Trim();
+            }
+
+            // Parse Name (string)
+            string name = parts[0];
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new FormatException("Name cannot be empty");
+            }
+
+            // Parse Runs (int)
+            if (!int.TryParse(parts[1], out int runs))
+            {
+                throw new FormatException($"Invalid Runs value: '{parts[1]}'");
+            }
+            
+            if (runs < 0)
+            {
+                throw new FormatException($"Runs cannot be negative: {runs}");
+            }
+
+            // Parse Balls (int)
+            if (!int.TryParse(parts[2], out int balls))
+            {
+                throw new FormatException($"Invalid Balls value: '{parts[2]}'");
+            }
+            
+            if (balls < 0)
+            {
+                throw new FormatException($"Balls cannot be negative: {balls}");
+            }
+
+            // Parse IsOut (bool)
+            if (!bool.TryParse(parts[3], out bool isOut))
+            {
+                // Try to parse common variations
+                string lowerValue = parts[3].ToLower();
+                if (lowerValue == "true" || lowerValue == "t" || lowerValue == "yes" || lowerValue == "y" || lowerValue == "1")
+                {
+                    isOut = true;
+                }
+                else if (lowerValue == "false" || lowerValue == "f" || lowerValue == "no" || lowerValue == "n" || lowerValue == "0")
+                {
+                    isOut = false;
+                }
+                else
+                {
+                    throw new FormatException($"Invalid IsOut value: '{parts[3]}'");
+                }
+            }
+
+            // Create and return Player object
+            return new Player
+            {
+                Name = name,
+                RunsScored = runs,
+                BallsFaced = balls,
+                IsOut = isOut
+            };
+        }
+
+        static void DisplayResults(List<Player> players)
+        {
+            Console.WriteLine("\n" + new string('=', 60));
+            Console.WriteLine("FINAL RESULTS - Sorted by Strike Rate (Descending)");
+            Console.WriteLine(new string('=', 60));
+            
+            if (players.Count == 0)
+            {
+                Console.WriteLine("\nNo valid players found with 10+ balls faced.");
+                return;
+            }
+
+            // Display header
+            Console.WriteLine($"{"Name",-15} {"Runs",-8} {"SR",-8} {"Avg",-8}");
+            Console.WriteLine(new string('-', 40));
+
+            // Display each player
+            foreach (var player in players)
+            {
+                Console.WriteLine($"{player.Name,-15} {player.RunsScored,-8} {player.StrikeRate,-8:F2} {player.Average,-8:F2}");
+            }
+            
+            Console.WriteLine(new string('-', 40));
+            Console.WriteLine($"Total players displayed: {players.Count}");
+            
+            // Additional statistics
+            Console.WriteLine("\n" + new string('=', 60));
+            Console.WriteLine("SUMMARY STATISTICS");
+            Console.WriteLine(new string('=', 60));
+            
+            double avgStrikeRate = players.Average(p => p.StrikeRate);
+            int totalRuns = players.Sum(p => p.RunsScored);
+            int totalBalls = players.Sum(p => p.BallsFaced);
+            int notOutCount = players.Count(p => !p.IsOut);
+            
+            Console.WriteLine($"Average Strike Rate: {avgStrikeRate:F2}");
+            Console.WriteLine($"Total Runs: {totalRuns}");
+            Console.WriteLine($"Total Balls Faced: {totalBalls}");
+            Console.WriteLine($"Players Not Out: {notOutCount}");
+        }
+    }
+}
