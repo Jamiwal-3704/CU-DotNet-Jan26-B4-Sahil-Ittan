@@ -7,7 +7,7 @@ namespace EmployeeBonusTests
     [TestFixture]
     public class EmployeeBonusTests
     {
-        // ✅ Test Case 1 – Normal High Performer (No Cap Triggered)
+        // Test Case 1 – Normal High Performer (No Cap Triggered)
         [Test]
         public void NetAnnualBonus_NormalHighPerformer_ReturnsExpected()
         {
@@ -23,7 +23,7 @@ namespace EmployeeBonusTests
             Assert.AreEqual(123200.00m, emp.NetAnnualBonus);
         }
 
-        // ✅ Test Case 2 – Attendance Penalty Applied
+        // Test Case 2 – Attendance Penalty Applied
         [Test]
         public void NetAnnualBonus_AttendanceBelow85_AppliesPenalty()
         {
@@ -39,7 +39,7 @@ namespace EmployeeBonusTests
             Assert.AreEqual(60480.00m, emp.NetAnnualBonus);
         }
 
-        // ✅ Test Case 3 – Cap Triggered
+        // Test Case 3 – Cap Triggered
         [Test]
         public void NetAnnualBonus_ExceedsCap_Applies40PercentCap()
         {
@@ -55,7 +55,7 @@ namespace EmployeeBonusTests
             Assert.AreEqual(280000.00m, emp.NetAnnualBonus);
         }
 
-        // ✅ Test Case 4 – Zero Salary
+        // Test Case 4 – Zero Salary
         [Test]
         public void NetAnnualBonus_BaseSalaryZero_ReturnsZero()
         {
@@ -67,7 +67,7 @@ namespace EmployeeBonusTests
             Assert.AreEqual(0.00m, emp.NetAnnualBonus);
         }
 
-        // ✅ Test Case 5 – Low Performer (Rating 2)
+        // Test Case 5 – Low Performer (Rating 2)
         [Test]
         public void NetAnnualBonus_LowPerformerRating2_ReturnsExpected()
         {
@@ -83,7 +83,7 @@ namespace EmployeeBonusTests
             Assert.AreEqual(13500.00m, emp.NetAnnualBonus);
         }
 
-        // ✅ Test Case 6 – Exact 150,000 Tax Boundary
+        // Test Case 6 – Exact 150,000 Tax Boundary
         [Test]
         public void NetAnnualBonus_Exact150kTaxBoundary_Applies10PercentTax()
         {
@@ -99,7 +99,7 @@ namespace EmployeeBonusTests
             Assert.AreEqual(64800.00m, emp.NetAnnualBonus);
         }
 
-        // ✅ Test Case 7 – High Tax Slab (>300k Without Cap)
+        // Test Case 7 – High Tax Slab (>300k Without Cap)
         [Test]
         public void NetAnnualBonus_HighTaxSlab_ReturnsExpected()
         {
@@ -115,7 +115,7 @@ namespace EmployeeBonusTests
             Assert.AreEqual(226800.00m, emp.NetAnnualBonus);
         }
 
-        // ✅ Test Case 8 – Rounding Precision
+        // Test Case 8 – Rounding Precision
         [Test]
         public void NetAnnualBonus_RoundingPrecision_ReturnsTwoDecimals()
         {
@@ -131,7 +131,7 @@ namespace EmployeeBonusTests
             Assert.AreEqual(118649.88m, emp.NetAnnualBonus);
         }
 
-        // ✅ Invalid Rating Test
+        // Invalid Rating Test
         [Test]
         public void NetAnnualBonus_InvalidRating_ThrowsException()
         {
