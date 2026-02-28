@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EmployeeBonusSolution/EmployeeBonusSolution.csproj" />
+  <Project Path="EmployeeBonusTests/EmployeeBonusTests.csproj" Id="f4ba1b86-a65a-4e78-b7bd-98e74aacf5b7" />
+</Solution>
