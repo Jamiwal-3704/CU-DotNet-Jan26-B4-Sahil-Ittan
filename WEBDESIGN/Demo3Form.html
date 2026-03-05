@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Registration Form</title>
+</head>
+
+<body>
+
+<h1>Employee Registration Form</h1>
+
+<form action="#">
+
+    <table border="1" cellpadding="8">
+
+        <!-- Name -->
+        <tr>
+            <td>
+                <label for="ename">Enter your name :</label>
+            </td>
+            <td>
+                <input 
+                    type="text"
+                    id="ename"
+                    name="ename"
+                    required
+                    pattern="^[A-Z][a-zA-Z ]+$"
+                    title="Name must start with a capital letter. Example: Sahil">
+            </td>
+        </tr>
+
+        <!-- Gender -->
+        <tr>
+            <td>
+                <label>Select Gender :</label>
+            </td>
+            <td>
+                <input type="radio" name="gender" value="M" required>
+                <label>Male</label>
+
+                <input type="radio" name="gender" value="F" required>
+                <label>Female</label>
+            </td>
+        </tr>
+
+        <!-- City -->
+        <tr>
+            <td>
+                <label for="city">Select city :</label>
+            </td>
+            <td>
+                <select id="city" name="city" required>
+                    <option value="">-- Select --</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Amritsar">Amritsar</option>
+                    <option value="Chennai">Chennai</option>
+                    <option value="Ahmedabad">Ahmedabad</option>
+                    <option value="Mumbai">Mumbai</option>
+                </select>
+            </td>
+        </tr>
+
+        <!-- DOB -->
+        <tr>
+            <td>
+                <label for="dob">Select DOB :</label>
+            </td>
+            <td>
+                <input 
+                    type="date"
+                    id="dob"
+                    name="dob"
+                    required
+                    min="2000-01-01"
+                    max="2010-12-31">
+            </td>
+        </tr>
+
+        <!-- Email -->
+        <tr>
+            <td>
+                <label for="email">Enter Email :</label>
+            </td>
+            <td>
+                <input 
+                    type="email"
+                    id="email"
+                    name="email"
+                    required>
+            </td>
+        </tr>
+
+        <!-- Buttons -->
+        <tr>
+            <td colspan="2" align="center">
+                <input type="submit" value="Submit">
+                <input type="reset" value="Reset">
+            </td>
+        </tr>
+
+    </table>
+
+</form>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+// M1PRACTICE
+
+public class Student
+{
+	public int StudentID {get; set;}
+	public string StudentName {get; set;}
+
+	public Student(int studentId, string studentName)
+	{
+		StudentID = studentId;
+		StudentName = studentName;
+	}
+
+	public override int Equals(Student student)
+	{
+		Student other = student as Student;
+                
+		if (other == null)
+                return false;
+
+		return this.StudentID == other.StudentID && this.StudentName = this.StudentName;
+	}
+
+	public override int GetHashCode()
+	{
+		return studentID.GetHashCode();
+	}
+}
+
+public class StudentMarks
+{
+
+	Dictionary<Student, int> StudentRecords = new Dictionary<Student, int>();
+	
+	pubic void AddStudentRecord(Student student, int marks)
+	{
+		if(StudentRecords.ContainsKey(student))
+		{
+			if(marks > StudentRecords[student])
+			{
+				StudentRecords[student] = marks;
+			}
+		}
+		else
+		{
+			StudentRecords.Add(student,marks);
+		}
+	}
+
+
+
+
+}
+
+Internal class Program
+{
+	
+	public static void Main(string[] args)
+	{	
+		StudentMarks sm = new StudentMarks();
+		sm.AddStudentRecord(1,"Student1",84);
+		sm.AddStudentRecord(2,"Student2",90);
+		sm.AddStudentRecord(3,"Student3",78);
+		sm.AddStudentRecord(4,"Student4",80);
+		sm.AddStudentRecord(5,"Student5",89);
+		sm.AddStudentRecord(1,"Student1",88);
+
+		sm.DisplayAllRecords();
+		
+	}
+}
+
+
+
+
+

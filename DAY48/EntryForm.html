@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entity Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; max-width: 800px; margin: auto; }
+        td, th { padding: 10px; border: 1px solid #ddd; }
+        th { background-color: #f2f2f2; text-align: left; }
+        label { font-weight: bold; }
+        input[type="submit"], input[type="reset"] { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        .center-align { text-align: center; }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">College Administration Form</h1>
+    <form action="/submit-registration">
+    <table>
+        <tr><th colspan="2">Section 1: Personal Information</th></tr>
+        <tr>
+            <td><label for="FullName">Full Name:</label></td>
+            <td><input type="text" id="FullName" placeholder="First Middle Last" required pattern="[A-Z]{1}[a-z]{1,} [A-Z]{1}[a-z]{1,}" maxlength="150"></td>
+        </tr>
+
+        <tr>
+            <td><label for="dob">Date of Birth:</label></td>
+            <td><input type="date" id="dob" name="dob" required></td>
+        </tr>
+
+        <tr>
+            <td><label for="applicantPhoto">Passport-size Photo:</label></td>
+            <td><input type="file" id="applicantPhoto" name="applicantPhoto" accept="image/jpeg, image/png" required></td>
+        </tr>
+        
+        <tr>
+            <td><label>Gender:</label></td>
+                <td>
+                    <input type="radio" id="genderMale" name="gender" value="male" required> <label for="genderMale">Male</label>
+                    <input type="radio" id="genderFemale" name="gender" value="female"> <label for="genderFemale">Female</label>
+                    <input type="radio" id="genderOther" name="gender" value="other"> <label for="genderOther">Other</label>
+                </td>
+                <hr>
+        </tr>
+        <!-- Section 2: Contact Information -->
+        <tr><th colspan="2"> <br><hr> Section 2: Contact Information <br> </th></tr>
+        <tr>
+            <td><label for="email">Email Address:</label></td>
+            <td><input type="email" id="email" name="email" placeholder="you@example.com" required></td>
+        </tr>
+
+        <tr>
+            <td><label for="phone">Phone Number:</label></td>
+            <td><input type="tel" id="phone" name="phone" pattern="[0-9]{10}" placeholder="10-digit mobile number" required></td>
+        </tr>
+
+        <tr>
+            <td><label for="address">Mailing Address:</label></td>
+            <td><textarea id="address" name="address" rows="4" placeholder="Enter your full mailing address" required></textarea></td>
+        </tr>
+        <tr>
+            <td><label for="personalWebsite">Personal Website/Portfolio:</label></td>
+            <td><input type="url" id="personalWebsite" name="personalWebsite" placeholder="https://your-portfolio.com"></td>
+        </tr>
+
+        <!-- section : Academic Information -->
+        <tr><th colspan="2"> <br><hr> Section 3: Academic Information <br> </th></tr>
+            <tr>
+                <td><label for="gpa">High School GPA:</label></td>
+                <td><input type="number" id="gpa" name="gpa" min="0.0" max="4.0" step="0.1" placeholder="e.g., 3.5" required></td>
+            </tr>
+            <tr>
+                <td><label for="gradMonth">Graduation Month/Year:</label></td>
+                <td><input type="month" id="gradMonth" name="gradMonth" required></td>
+            </tr>
+            <tr>
+                <td><label for="major">Intended Major:</label></td>
+                <td>
+                    <select id="major" name="major" required>
+                        <option value="">-- Select a Major --</option>
+                        <optgroup label="School of Engineering">
+                            <option value="cs">Computer Science</option>
+                            <option value="me">Mechanical Engineering</option>
+                            <option value="ee">Electrical Engineering</option>
+                        </optgroup>
+                        <optgroup label="School of Arts & Sciences">
+                            <option value="phy">Physics</option>
+                            <option value="chem">Chemistry</option>
+                            <option value="eng">English Literature</option>
+                        </optgroup>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Extracurriculars:</label></td>
+                <td>
+                    <input type="checkbox" id="sports" name="extras" value="sports"> <label for="sports">Sports</label><br>
+                    <input type="checkbox" id="music" name="extras" value="music"> <label for="music">Music/Arts</label><br>
+                    <input type="checkbox" id="volunteer" name="extras" value="volunteer"> <label for="volunteer">Volunteering</label>
+                </td>
+            </tr>
+
+            <!-- Section: Additional Information -->
+            <tr><th colspan="2"> <br><hr> Section 4: Additional Information <br></th></tr>
+            <tr>
+                <td><label for="campusTour">Preferred Campus Tour Date:</label></td>
+                <td><input type="datetime-local" id="campusTour" name="campusTour"></td>
+            </tr>
+            <tr>
+                <td><label for="confidence">Confidence in getting admitted (1-10):</label></td>
+                <td>1 <input type="range" id="confidence" name="confidence" min="1" max="10" value="5"> 10</td>
+            </tr>
+            <tr>
+                <td><label for="themeColor">Preferred Dorm Theme Color:</label></td>
+                <td><input type="color" id="themeColor" name="themeColor" value="#4a86e8"></td>
+            </tr>
+
+            <!-- Section: Submission -->
+            <tr><th colspan="2"> <br><hr> Section 5: Declaration and Submission <br></th></tr>
+            <tr>
+                <td colspan="2">
+                    <input type="checkbox" id="declaration" name="declaration" required>
+                    <label for="declaration">I hereby declare that the information provided is true and correct to the best of my knowledge.</label>
+                </td>
+            </tr>
+            <input type="hidden" name="applicationId" value="APP-2026-XYZ">
+            <tr>
+                <td colspan="2" class="center-align">
+                    <input type="submit" value="Submit Application">
+                    <input type="reset" value="Clear Form">
+                </td>
+            </tr>
+    </table>
+
+    </form>
+</body>
+</html>
