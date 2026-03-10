@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Entity Form</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        max-width: 800px;
+        margin: auto;
+      }
+
+      td,
+      th {
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #f2f2f2;
+        text-align: left;
+      }
+
+      label {
+        font-weight: bold;
+      }
+
+      input[type="submit"],
+      input[type="reset"] {
+        padding: 10px 20px;
+        margin: 5px;
+        cursor: pointer;
+      }
+
+      .center-align {
+        text-align: center;
+      }
+
+      #resultBox {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 15px;
+        background: #eef6ff;
+        border-left: 5px solid #4a86e8;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1 style="text-align: center">College Administration Form</h1>
+
+    <form id="collegeForm">
+      <table>
+        <tr>
+          <th colspan="2">Section 1: Personal Information</th>
+        </tr>
+
+        <tr>
+          <td><label for="FullName">Full Name:</label></td>
+          <td><input type="text" id="FullName" required /></td>
+        </tr>
+
+        <tr>
+          <td><label for="dob">Date of Birth:</label></td>
+          <td><input type="date" id="dob" required /></td>
+        </tr>
+
+        <tr>
+          <td><label>Gender:</label></td>
+          <td>
+            <input type="radio" name="gender" value="Male" /> Male
+            <input type="radio" name="gender" value="Female" /> Female
+            <input type="radio" name="gender" value="Other" /> Other
+          </td>
+        </tr>
+
+        <tr>
+          <th colspan="2">Section 2: Contact Information</th>
+        </tr>
+
+        <tr>
+          <td>Email:</td>
+          <td><input type="email" id="email" required /></td>
+        </tr>
+
+        <tr>
+          <td>Phone:</td>
+          <td><input type="tel" id="phone" required /></td>
+        </tr>
+
+        <tr>
+          <td>Address:</td>
+          <td><textarea id="address"></textarea></td>
+        </tr>
+
+        <tr>
+          <th colspan="2">Section 3: Academic Information</th>
+        </tr>
+
+        <tr>
+          <td>GPA:</td>
+          <td><input type="number" id="gpa" /></td>
+        </tr>
+
+        <tr>
+          <td>Graduation Month:</td>
+          <td><input type="month" id="gradMonth" /></td>
+        </tr>
+
+        <tr>
+          <td>Major:</td>
+          <td>
+            <select id="major">
+              <option value="">Select</option>
+              <option>Computer Science</option>
+              <option>Mechanical Engineering</option>
+              <option>Physics</option>
+            </select>
+          </td>
+        </tr>
+
+        <tr>
+          <td>Extracurriculars</td>
+          <td>
+            <input type="checkbox" class="extra" value="Sports" /> Sports
+
+            <input type="checkbox" class="extra" value="Music" /> Music
+
+            <input type="checkbox" class="extra" value="Volunteering" />
+            Volunteering
+          </td>
+        </tr>
+
+        <tr>
+          <th colspan="2">Submission</th>
+        </tr>
+
+        <tr>
+          <td colspan="2" class="center-align">
+            <input type="submit" value="Submit Application" />
+            <input type="reset" value="Clear Form" />
+          </td>
+        </tr>
+      </table>
+    </form>
+
+    <div id="resultBox"></div>
+
+    <script>
+      document
+        .getElementById("collegeForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          let name = document.getElementById("FullName").value;
+
+          let dob = document.getElementById("dob").value;
+
+          let genderElement = document.querySelector(
+            'input[name="gender"]:checked',
+          );
+          let gender = genderElement ? genderElement.value : "Not Selected";
+
+          let email = document.getElementById("email").value;
+
+          let phone = document.getElementById("phone").value;
+
+          let address = document.getElementById("address").value;
+
+          let gpa = document.getElementById("gpa").value;
+
+          let gradMonth = document.getElementById("gradMonth").value;
+
+          let major = document.getElementById("major").value;
+
+          let extras = [];
+
+          document.querySelectorAll(".extra:checked").forEach(function (e) {
+            extras.push(e.value);
+          });
+
+          extras = extras.join(", ");
+
+          let resultString =
+            "Name: " +
+            name +
+            " | DOB: " +
+            dob +
+            " | Gender: " +
+            gender +
+            " | Email: " +
+            email +
+            " | Phone: " +
+            phone +
+            " | Address: " +
+            address +
+            " | GPA: " +
+            gpa +
+            " | Graduation Month: " +
+            gradMonth +
+            " | Major: " +
+            major +
+            " | Extracurriculars: " +
+            extras;
+
+          document.getElementById("resultBox").innerHTML = resultString;
+        });
+    </script>
+  </body>
+</html>

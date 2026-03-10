@@ -1,0 +1,224 @@
+<!doctype html>
+<html>
+  <head>
+    <title>ClearDebt Loan Calculator</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        margin: 0;
+        padding: 40px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .container {
+        background: white;
+        width: 900px;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 25px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .form-grid input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+
+      .loan-type {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .loan-type label {
+        margin-right: 20px;
+        font-weight: bold;
+      }
+
+      button {
+        display: block;
+        margin: auto;
+        padding: 12px 25px;
+        border: none;
+        background: #4caf50;
+        color: white;
+        font-size: 16px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #3e8e41;
+      }
+
+      .summary {
+        margin-top: 20px;
+        padding: 12px;
+        background: #eef6ff;
+        border-left: 5px solid #4facfe;
+        border-radius: 6px;
+        font-weight: bold;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 25px;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #ddd;
+      }
+
+      th {
+        background: #4facfe;
+        color: white;
+      }
+
+      tbody tr:nth-child(even) {
+        background: #f2f7ff;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2>🏦 ClearDebt Loan Calculator</h2>
+
+      <form id="loanForm">
+        <div class="form-grid">
+          <input type="number" id="amount" placeholder="Loan Amount" required />
+          <input
+            type="number"
+            id="rate"
+            placeholder="Interest Rate (%)"
+            required
+          />
+
+          <input
+            type="number"
+            id="months"
+            placeholder="Loan Tenure (Months)"
+            required
+          />
+        </div>
+
+        <div class="loan-type">
+          <label>
+            <input type="radio" name="loanType" value="Home Loan" required />
+            Home Loan
+          </label>
+
+          <label
+            ><input type="radio" name="loanType" value="Car Loan" /> Car
+            Loan</label
+          >
+
+          <label
+            ><input type="radio" name="loanType" value="Personal Loan" />
+            Personal Loan</label
+          >
+        </div>
+
+        <button type="submit">Generate EMI Schedule</button>
+      </form>
+
+      <div id="loanInfo" class="summary"></div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>SNO</th>
+            <th>Loan Left</th>
+            <th>EMI</th>
+            <th>Principal</th>
+            <th>Interest</th>
+            <th>Remaining Balance</th>
+          </tr>
+        </thead>
+
+        <tbody id="scheduleBody"></tbody>
+      </table>
+    </div>
+
+    <script>
+      document
+        .getElementById("loanForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          /* Get form values */
+
+          let amount = parseFloat(document.getElementById("amount").value);
+          let rate = parseFloat(document.getElementById("rate").value);
+          let months = parseFloat(document.getElementById("months").value);
+
+          let loanType = document.querySelector(
+            'input[name="loanType"]:checked',
+          ).value;
+
+          /* Convert annual rate to monthly */
+
+          let monthlyRate = rate / 100 / 12;
+
+          /* EMI formula */
+
+          let emi =
+            (amount * monthlyRate * Math.pow(1 + monthlyRate, months)) /
+            (Math.pow(1 + monthlyRate, months) - 1);
+
+          let balance = amount;
+
+          let tableBody = document.getElementById("scheduleBody");
+
+          tableBody.innerHTML = "";
+
+          /* Summary info */
+
+          document.getElementById("loanInfo").innerHTML = "Loan Type: " + loanType + " | Loan Amount: ₹" + amount.toFixed(2) +
+           " | Monthly EMI: ₹" + emi.toFixed(2) + " | Tenure: " + months + " months";
+
+          /* Amortization loop */
+          for (let i = 1; i <= months; i++) {
+            let interest = balance * monthlyRate;
+
+            let principal = emi - interest;
+
+            let remainingBalance = balance - principal;
+
+            let row = 
+            `<tr>
+              <td>${i}</td>
+              <td>${balance.toFixed(2)}</td>
+              <td>${emi.toFixed(2)}</td>
+              <td>${principal.toFixed(2)}</td>
+              <td>${interest.toFixed(2)}</td>
+              <td>${remainingBalance.toFixed(2)}</td>
+            </tr>`;
+
+            tableBody.innerHTML += row;
+
+            balance = remainingBalance;
+          }
+        });
+    </script>
+  </body>
+</html>

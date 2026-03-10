@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Sum Form</title>
+  <style>
+    body {
+      margin: 20px;
+      font-family: Arial, sans-serif;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .row input[type="text"] {
+      width: 200px;
+      height: 30px;
+      font-size: 16px;
+      padding: 2px 6px;
+      background-color: white;
+      border: 2px solid #555;
+    }
+
+    .row span {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .row button {
+      width: 60px;
+      height: 36px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #e0e0e0;
+      border: 2px solid #555;
+    }
+
+    #result {
+      width: 200px;
+      height: 30px;
+      font-size: 16px;
+      padding: 2px 6px;
+      background-color: white;
+      border: 2px solid #555;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="row">
+    <input type="text" id="num1" onblur="validateField(this)">
+    <span>+</span>
+    <input type="text" id="num2" onblur="validateField(this)">
+    <button onclick="calculate()">=</button>
+    <input type="text" id="result" readonly>
+  </div>
+
+  <script>
+    function validateField(input) {
+      var val = input.value.trim();
+
+      if (val === "") {
+        input.style.backgroundColor = "red";
+        showError();
+      } else if (isNaN(val)) {
+        input.style.backgroundColor = "yellow";
+        showError();
+      } else {
+        input.style.backgroundColor = "white";
+        calculate();
+      }
+    }
+
+    function showError() {
+      var result = document.getElementById("result");
+      result.value = "Error";
+      result.style.backgroundColor = "orange";
+    }
+
+    function calculate() {
+      var n1 = document.getElementById("num1").value.trim();
+      var n2 = document.getElementById("num2").value.trim();
+      var result = document.getElementById("result");
+
+      if (n1 === "" || n2 === "" || isNaN(n1) || isNaN(n2)) {
+        result.value = "Error";
+        result.style.backgroundColor = "orange";
+        return;
+      }
+
+      result.value = parseFloat(n1) + parseFloat(n2);
+      result.style.backgroundColor = "white";
+    }
+  </script>
+
+</body>
+</html>

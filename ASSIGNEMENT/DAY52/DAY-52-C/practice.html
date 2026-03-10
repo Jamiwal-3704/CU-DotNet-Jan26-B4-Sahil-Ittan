@@ -1,0 +1,181 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <h1>🏦 ClearDebt Loan Calculator</h1>
+
+    <table>
+        <tr>
+            <th>SNO</th>
+            <th>LOAN LEFFT</th>
+            <th>EMI</th>
+            <th>PRINCIPLE</th>
+            <th>INTEREST</th>
+            <th>REMAINING BALANCE</th>
+        </tr>
+
+        <tr></tr>
+    </table>
+
+
+</body>
+</html> -->
+
+
+
+<!doctype html>
+<html>
+  <head>
+    <title>ClearDebt Loan Calculator</title>
+
+    <style>
+      body {
+        font-family: Arial;
+        padding: 30px;
+      }
+
+      h2 {
+        text-align: center;
+      }
+
+      form {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      input {
+        padding: 8px;
+        margin: 5px;
+      }
+
+      button {
+        padding: 8px 15px;
+        cursor: pointer;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th{
+        background-color: rgb(53, 220, 20);
+      }
+
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>🏦 ClearDebt Loan Calculator</h2>
+
+    <form id="loanForm">
+      Loan Amount:
+      <input type="number" id="amount" required />
+
+      Interest Rate (%):
+      <input type="number" id="rate" required />
+
+      Tenure (Months):
+      <input type="number" id="months" required />
+
+      <button type="submit">Calculate</button>
+    </form>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th>SNO</th>
+          <th>Loan Left</th>
+          <th>EMI</th>
+          <th>Principal</th>
+          <th>Interest</th>
+          <th>Remaining Balance</th>
+        </tr>
+      </thead>
+
+      <tbody id="scheduleBody"></tbody>
+    </table>
+
+    <script>
+      document
+        .getElementById("loanForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          /* Task A: Data Retrieval */
+
+          let amount = parseFloat(document.getElementById("amount").value);
+          let rate = parseFloat(document.getElementById("rate").value);
+          let months = parseFloat(document.getElementById("months").value);
+
+          /* Convert annual rate to monthly */
+
+          let monthlyRate = rate / 100 / 12;
+
+          /* Task B: EMI Calculation */
+
+          let p = amount;
+          let r = monthlyRate;
+          let t = months;
+
+          let emi = (p * r * Math.pow(1 + r, t)) / (Math.pow(1 + r, t) - 1);
+
+          /* Table body */
+
+          let tbody = document.getElementById("scheduleBody");
+
+          tbody.innerHTML = "";
+
+          let balance = amount;
+
+          /* Task C: Amortization Loop */
+
+          for (let i = 1; i <= months; i++) {
+            let interest = balance * r;
+
+            let principal = emi - interest;
+
+            let remainingBalance = balance - principal;
+
+            let row =
+              "<tr>" +
+              "<td>" +
+              i +
+              "</td>" +
+              "<td>" +
+              balance.toFixed(2) +
+              "</td>" +
+              "<td>" +
+              emi.toFixed(2) +
+              "</td>" +
+              "<td>" +
+              principal.toFixed(2) +
+              "</td>" +
+              "<td>" +
+              interest.toFixed(2) +
+              "</td>" +
+              "<td>" +
+              remainingBalance.toFixed(2) +
+              "</td>" +
+              "</tr>";
+
+            tbody.innerHTML += row;
+
+            balance = remainingBalance;
+          }
+        });
+    </script>
+  </body>
+</html>
