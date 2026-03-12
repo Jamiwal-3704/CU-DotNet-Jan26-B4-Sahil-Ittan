@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CompanyPortal</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CompanyPortal.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+
+
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CompanyPortal</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/cu-logo.png" alt="CU Logo" width="40" height="60" class="me-2" />
+                    CompanyPortal
+                </a>
+
+                <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="menu">
+
+                    <ul class="navbar-nav">
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="About">About</a>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Services</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Services" asp-action="Consulting">Consulting</a></li>
+                                <li><a class="dropdown-item" asp-controller="Services" asp-action="Training">Training</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Products</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Products" asp-action="Software">Software</a></li>
+                                <li><a class="dropdown-item" asp-controller="Products" asp-action="Tools">Tools</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Contact" asp-action="Index">Contact</a>
+                        </li>
+
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2026 - CompanyPortal - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.addEventListener("load", function () {
+
+            var toastElement = document.getElementById("welcomeToast");
+
+            if (toastElement) {
+                var toast = new bootstrap.Toast(toastElement, {
+                    delay: 4000
+                });
+
+                toast.show();
+            }
+
+        });
+    </script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="welcomeToast" class="toast shadow border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <!-- Toast Header -->
+            <div class="toast-header bg-dark text-white">
+                <img src="~/images/cu-logo.png" class="rounded me-2" style="height:20px;" alt="CU Logo">
+                <strong class="me-auto">CompanyPortal</strong>
+                <small>just now</small>
+                <button type="button" class="btn-close btn-close-white ms-2 mb-1"
+                        data-bs-dismiss="toast"></button>
+            </div>
+            <!-- Toast Body -->
+            <div class="toast-body">
+                👋 Welcome to <strong>CompanyPortal</strong>!
+
+                <hr class="my-2">
+
+                <p class="mb-1">
+                    Explore our services and products designed to help businesses grow.
+                </p>
+
+                <ul class="mb-2">
+                    <li>💼 Professional IT Consulting</li>
+                    <li>📚 Industry Training Programs</li>
+                    <li>💻 Enterprise Software Solutions</li>
+                </ul>
+                <small class="text-muted">
+                    Navigate using the menu above to learn more about what we offer.
+                </small>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

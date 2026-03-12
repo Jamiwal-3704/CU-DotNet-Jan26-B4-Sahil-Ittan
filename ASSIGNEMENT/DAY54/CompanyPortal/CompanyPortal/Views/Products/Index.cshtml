@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container mt-4">
+
+    <h2 class="text-center mb-4">Our Products</h2>
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+
+                    <h4 class="card-title">
+                        Software Solutions
+                        <span class="badge bg-success">Popular</span>
+                    </h4>
+
+                    <p class="card-text">
+                        We develop enterprise-level software for businesses including CRM,
+                        ERP and inventory systems.
+                    </p>
+
+                    <a asp-controller="Products" asp-action="Software" class="btn btn-primary">
+                        View Software
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+
+                    <h4 class="card-title">
+                        Development Tools
+                        <span class="badge bg-info">New</span>
+                    </h4>
+
+                    <p class="card-text">
+                        Our development tools help teams automate testing,
+                        deployment and code analysis.
+                    </p>
+
+                    <a asp-controller="Products" asp-action="Tools" class="btn btn-dark">
+                        View Tools
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
