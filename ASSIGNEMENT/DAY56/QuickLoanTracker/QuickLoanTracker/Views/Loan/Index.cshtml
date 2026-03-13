@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+
+@model List<QuickLoanTracker.Models.Loan>
+
+<h2>Loan List</h2>
+
+<a asp-action="Create" class="btn btn-primary">Add Loan</a>
+
+<table class="table table-bordered mt-3">
+
+    <thead>
+        <tr>
+            <th>Borrower</th>
+            <th>Lender</th>
+            <th>Amount</th>
+            <th>Settled</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var loan in Model)
+        {
+            <tr>
+                <td>@loan.BorrowerName</td>
+                <td>@loan.LenderName</td>
+                <td>@loan.Amount</td>
+                <td>@loan.IsSettled</td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@loan.Id" class="btn btn-warning">Edit</a>
+
+                    <a asp-action="Delete" asp-route-id="@loan.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+

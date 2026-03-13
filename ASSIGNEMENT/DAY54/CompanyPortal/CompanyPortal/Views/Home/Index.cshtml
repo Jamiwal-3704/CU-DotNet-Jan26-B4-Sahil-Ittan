@@ -2,18 +2,111 @@
     ViewData["Title"] = "Home Page";
 }
 
-@* <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div> *@
-
 <div class="container mt-4">
+    <!-- Hero unit -->
     <div class="p-5 mb-4 bg-light rounded">
         <h1>Welcome to Company Portal</h1>
         <p>Your trusted technology partner.</p>
-        <a class="btn btn-primary">Learn More</a>
+        <a class="btn btn-primary" href="#">Learn More</a>
+    </div>  
+
+    <!-- Toasts trigger section (your original block) -->
+    <section class="mb-5">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4 p-lg-5">
+                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+                    <div>
+                        <span class="eyebrow">Bootstrap Toasts</span>
+                        <h2 class="h3 mt-3 mb-2">Share quick status updates without leaving the page.</h2>
+                        <p class="text-secondary mb-0">Use these examples to preview welcome, success, warning, and error notifications the way a portal would confirm updates and highlight action items.</p>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+                        <button type="button" class="btn btn-primary" data-toast-target="#welcomeToast">Welcome</button>
+                        <button type="button" class="btn btn-success" data-toast-target="#successToast">Success</button>
+                        <button type="button" class="btn btn-warning" data-toast-target="#warningToast">Warning</button>
+                        <button type="button" class="btn btn-danger" data-toast-target="#errorToast">Error</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Toast container (fixed position) – exactly your markup -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <!-- welcome toast (dark) -->
+        <div id="welcomeToast" class="toast align-items-center border-0 text-bg-dark" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3500" data-toast-auto-show="true">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-start gap-3">
+                    <span class="toast-icon" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" fill="currentColor" role="img" focusable="false">
+                            <path d="M8 0 1.5 3v4.6C1.5 11.3 4.2 14.6 8 16c3.8-1.4 6.5-4.7 6.5-8.4V3L8 0Zm3.1 6.2L7.3 10 5 7.7l1.1-1.1 1.2 1.2 2.7-2.7 1.1 1.1Z" />
+                        </svg>
+                    </span>
+                    <div class="toast-copy">
+                        <strong class="d-block">Welcome Back</strong>
+                        Chandigarh University Company Portal is ready with your latest campus updates.
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+
+        <!-- success toast (green) -->
+        <div id="successToast" class="toast border-0 text-bg-success mt-2" role="alert" aria-live="polite" aria-atomic="true" data-bs-delay="3200">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-start gap-3">
+                    <span class="toast-icon" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" fill="currentColor" role="img" focusable="false">
+                            <path d="M16 2.5 6 13 0 7l1.4-1.4L6 10.2l8.6-8.7L16 2.5Z" />
+                        </svg>
+                    </span>
+                    <div class="toast-copy">
+                        <strong class="d-block">Update Saved</strong>
+                        Your student profile and semester preferences were submitted successfully.
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+
+        <!-- warning toast (yellow / dark text) -->
+        <div id="warningToast" class="toast border-0 text-bg-warning mt-2" role="alert" aria-live="polite" aria-atomic="true" data-bs-delay="4200">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-start gap-3 text-dark">
+                    <span class="toast-icon toast-icon-dark" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" fill="currentColor" role="img" focusable="false">
+                            <path d="M8.9 1.5a1 1 0 0 0-1.8 0L.2 13.2A1 1 0 0 0 1 14.7h14a1 1 0 0 0 .8-1.5L8.9 1.5ZM8 5c.4 0 .8.3.8.8v3.3a.8.8 0 1 1-1.6 0V5.8c0-.5.4-.8.8-.8Zm0 6.6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z" />
+                        </svg>
+                    </span>
+                    <div class="toast-copy">
+                        <strong class="d-block">Fee Reminder</strong>
+                        One tuition payment milestone is due this week. Review the finance section before Friday.
+                    </div>
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+
+        <!-- error toast (red) -->
+        <div id="errorToast" class="toast border-0 text-bg-danger mt-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4500">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-start gap-3">
+                    <span class="toast-icon" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" fill="currentColor" role="img" focusable="false">
+                            <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm2.8 9.7-1.1 1.1L8 9.1l-1.7 1.7-1.1-1.1L6.9 8 5.2 6.3l1.1-1.1L8 6.9l1.7-1.7 1.1 1.1L9.1 8l1.7 1.7Z" />
+                        </svg>
+                    </span>
+                    <div class="toast-copy">
+                        <strong class="d-block">Report Unavailable</strong>
+                        The examination report could not be generated right now. Please try again in a few minutes.
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
     </div>
 
+    <!-- Cards row (consulting & training) -->
     <div class="row">
         <div class="col-md-4">
             <div class="card">
@@ -23,7 +116,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
@@ -34,3 +126,121 @@
         </div>
     </div>
 </div>
+
+<!-- ===== required scripts & initializer to make toasts work ===== -->
+<!-- Bootstrap JS bundle (includes Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+<!-- custom toast initialisation + icon style (keeps your original design crisp) -->
+<style>
+    /* ensure icons are properly sized and aligned (non-intrusive) */
+    .toast-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.75rem;
+        height: 1.75rem;
+        flex-shrink: 0;
+    }
+
+        .toast-icon svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            fill: currentColor;
+        }
+
+    .toast-icon-dark svg {
+        fill: #212529; /* better contrast on yellow warning */
+    }
+    /* small polish for the eyebrow (already defined but keep) */
+    .eyebrow {
+        font-size: 0.875rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        color: #6c757d;
+        font-weight: 500;
+    }
+    /* ensure toast body uses gap as intended */
+    .toast-body {
+        padding: 0.75rem 0.5rem 0.75rem 0.75rem;
+    }
+
+    .toast-copy {
+        line-height: 1.4;
+    }
+
+        .toast-copy strong {
+            font-weight: 600;
+            margin-bottom: 0.1rem;
+        }
+    /* make cards consistent */
+    .card .card-body h4 {
+        font-size: 1.35rem;
+        margin-bottom: 0.75rem;
+    }
+</style>
+
+<script>
+    (function() {
+        // wait until DOM is fully loaded (works in both ASP.NET and static HTML)
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. manually initialise all toasts (Bootstrap 5 requires init)
+            var toastElements = document.querySelectorAll('.toast');
+            var toastInstances = [];
+            toastElements.forEach(function(el) {
+                // create new Bootstrap toast instance with optional config from data attributes
+                var delay = el.getAttribute('data-bs-delay');
+                var options = {};
+                if (delay) {
+                    options.delay = parseInt(delay, 10);
+                }
+                // autohide is true by default, but you can set via data-bs-autohide if needed
+                var toast = new bootstrap.Toast(el, options);
+                toastInstances.push({ element: el, instance: toast });
+            });
+
+            // 2. wire up trigger buttons using data-toast-target
+            var triggerButtons = document.querySelectorAll('[data-toast-target]');
+            triggerButtons.forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    var targetSelector = this.getAttribute('data-toast-target');
+                    if (!targetSelector) return;
+                    var targetToast = document.querySelector(targetSelector);
+                    if (!targetToast) {
+                        console.warn('Toast target not found:', targetSelector);
+                        return;
+                    }
+                    // find the existing bootstrap instance or create one on the fly
+                    var toastInstance = bootstrap.Toast.getInstance(targetToast);
+                    if (!toastInstance) {
+                        // if not initialized (should never happen, but fallback)
+                        var delay = targetToast.getAttribute('data-bs-delay');
+                        var options = delay ? { delay: parseInt(delay, 10) } : {};
+                        toastInstance = new bootstrap.Toast(targetToast, options);
+                    }
+                    toastInstance.show();
+                });
+            });
+
+            // optional: if you want the toasts to be automatically shown on page load
+            // (only those with data-toast-auto-show="true") — as per original markup,
+            // the welcome toast has that attribute. we respect it.
+            toastElements.forEach(function(el) {
+                var autoShow = el.getAttribute('data-toast-auto-show');
+                if (autoShow && autoShow.toLowerCase() === 'true') {
+                    var inst = bootstrap.Toast.getInstance(el);
+                    if (inst) {
+                        // small delay to let page settle (optional)
+                        setTimeout(function() { inst.show(); }, 300);
+                    }
+                }
+            });
+
+            // Also ensure that any toast that might be created later (dynamic)
+            // but we already covered all static ones.
+        });
+    })();
+</script>
+
+<!-- small extra style for the active toast design: no extra required, Bootstrap does it all -->
+<!-- note: the original file had commented out default asp.net links; they are removed for clarity but you can keep layout if needed -->

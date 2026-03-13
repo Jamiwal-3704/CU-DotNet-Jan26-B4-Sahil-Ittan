@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+@model QuickLoanTracker.Models.Loan
+
+<h2>Add Loan</h2>
+
+<form asp-action="Create">
+
+    <div class="form-group">
+        <label asp-for="BorrowerName"></label>
+        <input asp-for="BorrowerName" class="form-control" />
+        <span asp-validation-for="BorrowerName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LenderName"></label>
+        <input asp-for="LenderName" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Amount"></label>
+        <input asp-for="Amount" class="form-control" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input asp-for="IsSettled" /> Settled
+    </div>
+
+    <button class="btn btn-success">Save</button>
+
+</form>
+

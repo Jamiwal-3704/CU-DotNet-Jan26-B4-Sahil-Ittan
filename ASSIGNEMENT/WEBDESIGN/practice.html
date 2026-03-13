@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subject Selection</title>
+  </head>
+  <body>
+    <form action="submit" method="post">
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>
+              <input type="radio" name="subject" id="cpp" value="c++" class="subject"/>
+              <label for="cpp">C++</label>
+
+              <input type="radio" name="subject" id="csharp" value="c#" class="subject"/>
+              <label for="csharp">C#</label>
+
+              <input type="radio" name="subject" id="javascript" value="javascript" class="subject" />
+              <label for="javascript">JavaScript</label>
+
+              <input type="radio" name="subject" id="python" value="python" class="subject"/>
+              <label for="python">Python</label>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Fixed: Moved name field inside tbody with proper table structure -->
+          <tr>
+            <td><label for="studentName">Name</label></td>
+            <td>
+              <input type="text" name="studentName" id="studentName" />
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <button type="submit">Submit</button>
+              <button type="button" onclick="showSelection()">
+                Show Selection
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+
+    <script>
+      function display() {
+        let subjects = document.getElementsByName("subject");
+        let selectedSubject = "";
+        
+        for (let i = 0; i < subjects.length; i++) {
+          if (subjects[i].checked) {
+            selectedSubject = subjects[i].value;
+            console.log("Selected subject: " + selectedSubject);
+            break;
+          }
+        }
+        
+        if (!selectedSubject) {
+          console.log("No subject selected");
+        }
+        return selectedSubject;
+      }
+
+        function displayName() {
+        let nameInput = document.getElementById("studentName");
+        let name = nameInput.value;
+        
+        console.log("Name entered: " + (name || "No name entered"));
+        
+        // Check if name contains "sahil" (case insensitive)
+        if (name.toLowerCase().includes("sahil")) {
+          console.log("Name contains 'sahil'");
+        } else {
+          console.log("Name does not contain 'sahil'");
+        }
+        
+        return name;
+      }
+
+      function showSelection() {
+        console.log("=== Form Data ===");
+        let subject = display();
+        let name = displayName();
+        
+
+        if (subject && name) {
+          alert(`Selected: ${subject}\nName: ${name}`);
+        } else if (subject) {
+          alert(`Selected: ${subject}\nName: Not entered`);
+        } else if (name) {
+          alert(`No subject selected\nName: ${name}`);
+        } else {
+          alert("Please select a subject and enter your name");
+        }
+        console.log("================");
+      }
+    </script>
+  </body>
+</html>
