@@ -1,0 +1,147 @@
+﻿@* @model FinanceTrackerPro.Models.Account
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Account</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AccountName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AccountName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Balance)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Balance)
+        </dd>
+    </dl>
+</div>
+
+<h3>Transactions</h3>
+
+@{
+    var transactions = ViewBag.Transactions as List<Transaction>;
+}
+
+<table class="table">
+
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @if (transactions != null)
+        {
+            foreach (var item in transactions)
+            {
+                <tr>
+                    <td>@item.Description</td>
+                    <td>@item.Amount</td>
+                    <td>@item.Category</td>
+                    <td>@item.Date</td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.AccountId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div> *@
+
+
+@model FinanceTrackerPro.Models.Account
+@using FinanceTrackerPro.Models
+@using System.Globalization
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Account Details";
+    var culture = CultureInfo.CurrentCulture;
+    var transactions = (ViewBag.Transactions as IEnumerable<Transaction>)?.OrderByDescending(t => t.Date)
+        ?? Enumerable.Empty<Transaction>();
+}
+
+<section class="mb-4">
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <p class="text-uppercase text-muted fw-semibold mb-1 letter-spacing-2">Account</p>
+                    <h1 class="h3 fw-bold mb-2">@Model.AccountName</h1>
+                    <span class="badge bg-success-subtle text-success-emphasis px-3 py-2 rounded-pill">
+                        Balance: @Model.Balance.ToString("C", culture)
+                    </span>
+                </div>
+                <div class="btn-group">
+                    <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@Model.AccountId">
+                        <i class="bi bi-pencil-square me-1"></i>Edit
+                    </a>
+                    <a class="btn btn-outline-secondary" asp-action="Index">
+                        <i class="bi bi-arrow-left-short me-1"></i>Back
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h4 fw-bold mb-0">Recent Transactions</h2>
+        <a class="btn btn-sm btn-primary" asp-controller="Transactions" asp-action="Create">
+            <i class="bi bi-plus-circle me-1"></i>Add Transaction
+        </a>
+    </div>
+
+    @if (!transactions.Any())
+    {
+        <div class="border border-2 border-dashed rounded-4 p-5 text-center text-muted">
+            <p class="mb-1 fw-semibold">No transactions recorded yet.</p>
+            <small>Add your first transaction to start building history.</small>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table align-middle shadow-sm bg-white rounded-4 overflow-hidden">
+                <thead class="table-light text-muted">
+                    <tr>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th class="text-end">Amount</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in transactions)
+                    {
+                        var amountClass = item.Amount >= 0 ? "text-success" : "text-danger";
+                        <tr>
+                            <td class="fw-semibold">@item.Description</td>
+                            <td><span class="badge bg-secondary-subtle text-secondary-emphasis">@item.Category</span></td>
+                            <td class="text-end fw-semibold @amountClass">@item.Amount.ToString("C", culture)</td>
+                            <td>@item.Date.ToString("MMM dd, yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

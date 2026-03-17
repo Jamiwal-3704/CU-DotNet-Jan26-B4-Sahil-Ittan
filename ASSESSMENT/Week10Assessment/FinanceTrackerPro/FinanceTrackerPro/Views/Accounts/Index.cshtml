@@ -1,0 +1,147 @@
+﻿@* @model IEnumerable<FinanceTrackerPro.Models.Account>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Balance)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.AccountName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Balance)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.AccountId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.AccountId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.AccountId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table> *@
+
+
+@model IEnumerable<FinanceTrackerPro.Models.Account>
+@using System.Globalization
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Accounts";
+    var accounts = Model?.ToList() ?? new List<FinanceTrackerPro.Models.Account>();
+    var totalBalance = accounts.Sum(a => a.Balance);
+    var averageBalance = accounts.Any() ? accounts.Average(a => a.Balance) : 0;
+    var topAccount = accounts.OrderByDescending(a => a.Balance).FirstOrDefault();
+    var culture = CultureInfo.CurrentCulture;
+}
+
+<section class="py-5 px-4 text-light rounded-4 mb-5" style="background: linear-gradient(135deg, #0d6efd, #6610f2);">
+    <div class="row align-items-center">
+        <div class="col-lg-7">
+            <p class="text-uppercase fw-semibold mb-1 letter-spacing-2">Accounts Overview</p>
+            <h1 class="display-5 fw-bold mb-3">Stay on top of every balance</h1>
+            <p class="lead mb-4">Monitor all your financial accounts and take quick actions without leaving this page.</p>
+            <div class="d-flex flex-wrap gap-3">
+                <a class="btn btn-light btn-lg px-4" asp-action="Create"><i class="bi bi-plus-circle me-2"></i>Add Account</a>
+                <a class="btn btn-outline-light btn-lg px-4" asp-controller="Transactions" asp-action="Create"><i class="bi bi-cash-stack me-2"></i>Log Transaction</a>
+            </div>
+        </div>
+        <div class="col-lg-5 mt-4 mt-lg-0">
+            <div class="bg-white text-dark rounded-4 shadow-lg p-4">
+                <div class="d-flex justify-content-between mb-3">
+                    <div>
+                        <p class="text-muted mb-1">Accounts</p>
+                        <h3 class="fw-bold mb-0">@accounts.Count</h3>
+                    </div>
+                    <div class="text-end">
+                        <p class="text-muted mb-1">Total Balance</p>
+                        <h3 class="fw-bold mb-0 text-success">@totalBalance.ToString("C0", culture)</h3>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p class="text-muted mb-1">Average Balance</p>
+                        <h5 class="fw-semibold">@averageBalance.ToString("C0", culture)</h5>
+                    </div>
+                    <div class="text-end">
+                        <p class="text-muted mb-1">Top Account</p>
+                        <h5 class="fw-semibold">@topAccount?.AccountName</h5>
+                        <small class="text-muted">@topAccount?.Balance.ToString("C0", culture)</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    @if (!accounts.Any())
+    {
+        <div class="text-center py-5 border border-2 border-dashed rounded-4">
+            <h2 class="fw-semibold mb-3">No accounts yet</h2>
+            <p class="text-muted mb-4">Start by creating your first account to see insights and balances.</p>
+            <a class="btn btn-primary btn-lg" asp-action="Create">Create Account</a>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="h4 fw-bold mb-0">All Accounts</h2>
+                    <a class="btn btn-outline-primary" asp-action="Create"><i class="bi bi-plus-lg me-2"></i>New Account</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="text-muted">
+                            <tr>
+                                <th>Account</th>
+                                <th class="text-end">Balance</th>
+                                <th style="width: 180px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in accounts)
+                            {
+                                var balanceClass = item.Balance >= 0 ? "text-success" : "text-danger";
+                                <tr>
+                                    <td class="fw-semibold">@item.AccountName</td>
+                                    <td class="text-end">
+                                        <span class="@balanceClass">@item.Balance.ToString("C", culture)</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@item.AccountId">Details</a>
+                                            <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.AccountId">Edit</a>
+                                            <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.AccountId">Delete</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</section>

@@ -1,0 +1,68 @@
+﻿@* @{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4 fw-bolder">WELCOME TO FINANCE TRACKER PRO</h1>
+</div> *@
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="py-5 text-light" style="background: linear-gradient(120deg, #1f8ef1, #5e72e4); border-radius: 1.25rem;">
+    <div class="container px-4">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <p class="text-uppercase fw-semibold mb-2 letter-spacing-2">Finance Tracker Pro</p>
+                <h1 class="display-4 fw-bold mb-3">Own Your Money Story</h1>
+                <p class="lead mb-4">
+                    Monitor accounts, analyze spending and stay ahead of upcoming transactions from one beautiful, responsive dashboard.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a class="btn btn-light btn-lg px-4" asp-controller="Accounts" asp-action="Index">
+                        Manage Accounts
+                    </a>
+                    <a class="btn btn-outline-light btn-lg px-4" asp-controller="Transactions" asp-action="Index">
+                        View Transactions
+                    </a>
+                </div>
+            </div>
+            </div>
+        </div>
+</section>
+
+<section class="mt-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="h5 fw-bold">Actionable Insights</h3>
+                    <p class="text-muted mb-0">
+                        Visualize spending trends and highlight categories that need attention.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="h5 fw-bold">Secure Tracking</h3>
+                    <p class="text-muted mb-0">
+                        Guard your finances with secure, real-time updates across devices.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="h5 fw-bold">Smart Goals</h3>
+                    <p class="text-muted mb-0">
+                        Set savings goals, monitor progress and celebrate milestones.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

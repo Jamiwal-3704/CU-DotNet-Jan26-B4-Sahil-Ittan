@@ -14,7 +14,6 @@ namespace QuickLoanTracker.Models
 
         [Range(1,500000, ErrorMessage = "Amount must be between 1 and 500000")]
         public double Amount { get; set; }
-
         public bool IsSettled { get; set; }
     }
 }
