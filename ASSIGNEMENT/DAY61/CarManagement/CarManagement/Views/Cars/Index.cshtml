@@ -1,0 +1,112 @@
+﻿@model IEnumerable<CarManagement.Models.Car>
+
+@{
+    ViewData["Title"] = "Cars";
+    var totalCars = Model?.Count() ?? 0;
+    var currentYear = DateTime.Now.Year;
+    var latestCars = Model?.Count(c => c.Year >= currentYear - 1) ?? 0;
+    var averagePrice = (Model?.Any() ?? false) ? Model.Average(c => c.Price) : 0;
+}
+
+<div class="page-shell cars-shell">
+    <section class="cars-hero">
+        <div>
+            <span class="hero-eyebrow">Vehicle Control Center</span>
+            <h1 class="cars-title">Car Inventory</h1>
+            <p class="section-subtext">Browse and manage all cars based on your access role.</p>
+        </div>
+        <div class="cars-meta">
+            <span class="meta-pill"><strong>@totalCars</strong> Cars</span>
+            @if (User.IsInRole("Admin"))
+            {
+                <span class="meta-pill role-admin">Admin Access</span>
+            }
+            else if (User.IsInRole("Customer"))
+            {
+                <span class="meta-pill role-customer">Customer Access</span>
+            }
+            else
+            {
+                <span class="meta-pill role-user">Read Only</span>
+            }
+        </div>
+    </section>
+
+    <section class="fleet-snapshot">
+        <article class="snapshot-tile">
+            <span class="snapshot-label">Total Vehicles</span>
+            <strong class="snapshot-value">@totalCars</strong>
+        </article>
+        <article class="snapshot-tile">
+            <span class="snapshot-label">Latest Models</span>
+            <strong class="snapshot-value">@latestCars</strong>
+        </article>
+        <article class="snapshot-tile">
+            <span class="snapshot-label">Average Price</span>
+            <strong class="snapshot-value">@averagePrice.ToString("N0")</strong>
+        </article>
+    </section>
+
+    <section class="content-card cars-card p-4">
+        <div class="section-head mb-3 cars-toolbar">
+            <div class="cars-toolbar-label">Vehicle List</div>
+            @if (User.IsInRole("Admin") || User.IsInRole("Customer"))
+            {
+                <a asp-action="Create" class="btn btn-primary">Add New Car</a>
+            }
+        </div>
+
+        @if (!(Model?.Any() ?? false))
+        {
+            <div class="empty-state">
+                <h3 class="mb-2">No cars found</h3>
+                <p class="mb-0">Create your first car entry to begin managing the catalog.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table class="app-table cars-table">
+                    <colgroup>
+                        <col class="cars-w-brand" />
+                        <col class="cars-w-model" />
+                        <col class="cars-w-year" />
+                        <col class="cars-w-price" />
+                        <col class="cars-w-actions" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Make</th>
+                            <th>@Html.DisplayNameFor(model => model.Model)</th>
+                            <th>@Html.DisplayNameFor(model => model.Year)</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="cars-cell-brand">@Html.DisplayFor(modelItem => item.Brand)</td>
+                            <td class="cars-cell-model">@Html.DisplayFor(modelItem => item.Model)</td>
+                            <td class="cars-cell-year">@Html.DisplayFor(modelItem => item.Year)</td>
+                            <td class="cars-cell-price">@item.Price.ToString("N0")</td>
+                            <td class="action-links cars-cell-actions">
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <a class="action-pill" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                }
+                                <a class="action-pill" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <a class="action-pill action-pill-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+</div>

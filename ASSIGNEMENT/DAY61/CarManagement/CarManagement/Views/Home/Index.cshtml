@@ -1,0 +1,127 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="page-shell">
+    <section class="hero-card home-hero">
+        <div class="home-hero-grid">
+            <div>
+                <span class="hero-eyebrow">Car Management Studio</span>
+                <h1 class="hero-title">Fleet Dashboard Built for Daily Vehicle Operations</h1>
+                <p class="hero-subtitle">
+                    Manage your vehicle records with role-based access, clean data views, and quick actions from a single workspace.
+                </p>
+                <div class="home-hero-cta">
+                    <a class="btn btn-primary" asp-controller="Cars" asp-action="Index">Open Vehicle List</a>
+                    <a class="btn app-ghost-btn" asp-area="Identity" asp-page="/Account/Login">Sign In</a>
+                </div>
+            </div>
+            <aside class="home-hero-panel">
+                <span class="panel-title">System Modes</span>
+                <div class="panel-item">
+                    <span>Administrator</span>
+                    <strong>Full Control</strong>
+                </div>
+                <div class="panel-item">
+                    <span>Customer</span>
+                    <strong>Create + View</strong>
+                </div>
+                <div class="panel-item">
+                    <span>User</span>
+                    <strong>View Only</strong>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <section class="stats-grid">
+        <article class="stat-tile">
+            <span class="stat-label">Fleet Health</span>
+            <span class="stat-value">Active Monitoring</span>
+        </article>
+        <article class="stat-tile">
+            <span class="stat-label">Record Integrity</span>
+            <span class="stat-value">Structured Data</span>
+        </article>
+        <article class="stat-tile">
+            <span class="stat-label">Access Security</span>
+            <span class="stat-value">Role Protected</span>
+        </article>
+    </section>
+
+    <section class="content-card p-4 operations-card">
+        <div class="section-head mb-3">
+            <h2 class="mb-0">Operations Console</h2>
+            <span class="home-badge">Day-to-Day Actions</span>
+        </div>
+        <p class="section-subtext mb-3">Use these shortcuts to access core modules quickly.</p>
+        <div class="home-actions-grid">
+            <a class="home-action-tile" asp-controller="Cars" asp-action="Index">
+                <strong>Vehicle Directory</strong>
+                <span>View and manage all registered vehicles.</span>
+            </a>
+            <a class="home-action-tile" asp-area="Identity" asp-page="/Account/Register">
+                <strong>Create Account</strong>
+                <span>Onboard a new user with secure credentials.</span>
+            </a>
+            <a class="home-action-tile" asp-controller="Home" asp-action="Privacy">
+                <strong>Security Policy</strong>
+                <span>Review platform privacy and compliance notes.</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="content-card p-4 role-pick-card">
+        <div class="section-head mb-3">
+            <h2 class="mb-0">Choose Your Role First</h2>
+            <span class="home-badge">Role-Based Entry</span>
+        </div>
+        <p class="section-subtext mb-3">Select a role, then register or login using that same role flow.</p>
+        <div class="role-pick-grid">
+            <article class="role-pick-tile role-pick-admin">
+                <h3>Admin</h3>
+                <p>Full access to create, update, and delete vehicles.</p>
+                <div class="role-pick-actions">
+                    <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register" asp-route-selectedRole="Admin">Register</a>
+                    <a class="btn app-ghost-btn" asp-area="Identity" asp-page="/Account/Login" asp-route-selectedRole="Admin">Login</a>
+                </div>
+            </article>
+
+            <article class="role-pick-tile role-pick-customer">
+                <h3>Customer</h3>
+                <p>Create and view vehicle records with restricted edit rights.</p>
+                <div class="role-pick-actions">
+                    <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register" asp-route-selectedRole="Customer">Register</a>
+                    <a class="btn app-ghost-btn" asp-area="Identity" asp-page="/Account/Login" asp-route-selectedRole="Customer">Login</a>
+                </div>
+            </article>
+
+            <article class="role-pick-tile role-pick-user">
+                <h3>User</h3>
+                <p>Read-only access for browsing vehicle information.</p>
+                <div class="role-pick-actions">
+                    <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register" asp-route-selectedRole="User">Register</a>
+                    <a class="btn app-ghost-btn" asp-area="Identity" asp-page="/Account/Login" asp-route-selectedRole="User">Login</a>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="template-grid">
+        <article class="template-tile">
+            <span class="template-label">Fleet Tracking</span>
+            <h3>Inventory Overview</h3>
+            <p>Track vehicle make, model, year, and pricing with an easy-to-scan list designed for daily operations.</p>
+        </article>
+        <article class="template-tile">
+            <span class="template-label">Role Security</span>
+            <h3>Controlled Access</h3>
+            <p>Admin, Customer, and User permissions are separated to keep data secure and operations predictable.</p>
+        </article>
+        <article class="template-tile">
+            <span class="template-label">Workflow</span>
+            <h3>Fast CRUD Actions</h3>
+            <p>Create, edit, and review vehicle records from one focused workflow built for a management team.</p>
+        </article>
+    </section>
+</div>
