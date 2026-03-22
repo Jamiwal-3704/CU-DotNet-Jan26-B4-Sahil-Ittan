@@ -79,11 +79,22 @@
                 </button>
 
 
-
                     <a class="navbar-brand d-flex align-items-center fw-semibold text-uppercase" asp-controller="Home" asp-action="Index">
-                        <span class="rounded-circle bg-light text-dark d-inline-flex align-items-center justify-content-center me-2" style="width:42px;height:42px;">
+                        @* <span class="rounded-circle bg-light text-dark d-inline-flex align-items-center justify-content-center me-2" style="width:42px;height:42px;">
                             <i class="bi bi-graph-up-arrow"></i>
-                        </span>
+                        </span> *@
+
+                    <span class="d-inline-flex align-items-center justify-content-center me-2"
+                          style="width:44px;height:44px;background:linear-gradient(105deg,#f6d365,orange);
+             border-radius:50px; box-shadow:0 6px 20px rgba(0,0,0,.15);">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                            <rect x="2" y="12" width="4" height="8" rx="1.5" fill="rgba(255,255,255,.9)" />
+                            <rect x="9" y="6" width="4" height="14" rx="1.5" fill="rgba(255,255,255,.9)" />
+                            <rect x="16" y="3" width="4" height="17" rx="1.5" fill="rgba(255,255,255,.9)" />
+                            <path d="M3 10L10 5.5L15 8L21 2" stroke="white" stroke-width="1.6" stroke-linecap="round" />
+                        </svg>
+                    </span>
+
                         FinanceTrackerPro
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"></button>

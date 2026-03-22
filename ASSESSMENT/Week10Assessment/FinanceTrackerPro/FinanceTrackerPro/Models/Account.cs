@@ -17,3 +17,4 @@ namespace FinanceTrackerPro.Models
         public List<Transaction>? Transactions { get; set; }
     }
 }
+
