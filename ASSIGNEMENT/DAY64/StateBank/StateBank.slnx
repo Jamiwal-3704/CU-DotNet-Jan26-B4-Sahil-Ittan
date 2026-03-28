@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/Services/">
+    <Project Path="AccountService/AccountService.csproj" />
+    <Project Path="AuthService/AuthService.csproj" Id="e0b1568e-3032-49a4-968c-3d7c783b7171" />
+  </Folder>
+</Solution>

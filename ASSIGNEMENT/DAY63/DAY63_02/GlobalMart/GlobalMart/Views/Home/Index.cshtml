@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<section class="gm-hero mb-4">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+            <span class="gm-chip gm-chip-accent">Fresh Deals Every Day</span>
+            <h1 class="display-5 mt-3 mb-3">Shop smarter with GlobalMart</h1>
+            <p class="mb-4">Discover curated products, transparent pricing, and quick checkout designed for modern shoppers.</p>
+            <div class="d-flex flex-wrap gap-2">
+                <a class="btn gm-btn-light" asp-controller="Products" asp-action="Index">Explore Products</a>
+                <a class="btn gm-btn-outline" asp-controller="Cart" asp-action="Index">View Cart</a>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="gm-metric mb-3">
+                <div class="value">15% Off</div>
+                <div>Exclusive seasonal savings automatically applied on selected products.</div>
+            </div>
+            <div class="gm-metric">
+                <div class="value">Fast Checkout</div>
+                <div>Built to keep your cart simple, accurate, and ready in just a few clicks.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="row g-3">
+    <div class="col-md-4">
+        <div class="gm-card p-4 h-100">
+            <h5>Top Picks</h5>
+            <p class="mb-0 text-secondary">Trending gadgets and accessories hand-picked for quality and value.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="gm-card p-4 h-100">
+            <h5>Reliable Pricing</h5>
+            <p class="mb-0 text-secondary">Dynamic price logic ensures discounts are reflected consistently.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="gm-card p-4 h-100">
+            <h5>Customer First</h5>
+            <p class="mb-0 text-secondary">A clean shopping flow with clear information from discovery to checkout.</p>
+        </div>
+    </div>
+</section>
+
+<div class="mt-4 text-center">
+    <a href="https://learn.microsoft.com/aspnet/core" target="_blank" rel="noopener">Learn more about ASP.NET Core</a>
+</div>

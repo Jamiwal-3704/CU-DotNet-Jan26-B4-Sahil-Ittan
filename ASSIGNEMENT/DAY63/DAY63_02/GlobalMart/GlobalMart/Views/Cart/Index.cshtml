@@ -1,0 +1,54 @@
+﻿@model IEnumerable<GlobalMart.Models.CartItem>
+
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+        <span class="gm-chip gm-chip-accent">Checkout Ready</span>
+        <h2 class="h3 mt-2 mb-1">Your Cart</h2>
+        <p class="text-secondary mb-0">Review items and proceed with confidence.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">Add Cart Item</a>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-6">
+        <div class="gm-metric">
+            <div class="value">@Model.Count()</div>
+            <div>Total items in cart</div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="gm-metric">
+            <div class="value">$@ViewBag.Total</div>
+            <div>Estimated total after promotion</div>
+        </div>
+    </div>
+</div>
+
+<div class="gm-list-table">
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Name)</th>
+                <th>@Html.DisplayNameFor(model => model.Price)</th>
+                <th class="text-nowrap">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+@foreach (var item in Model) {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>$@Html.DisplayFor(modelItem => item.Price)</td>
+                <td class="gm-actions text-nowrap">
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+}
+        </tbody>
+    </table>
+</div>
