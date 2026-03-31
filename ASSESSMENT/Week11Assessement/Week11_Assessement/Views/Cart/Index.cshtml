@@ -1,0 +1,75 @@
+@model CartSummaryViewModel
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<section class="hero-panel mb-4">
+    <p class="eyebrow mb-2">Checkout Console</p>
+    <h1 class="mb-2">Shopping Cart Summary</h1>
+    <p class="mb-0 text-secondary">Pricing logic here is injected from the same service used on the products screen.</p>
+</section>
+
+<div class="promo-strip mb-4">
+    <span class="promo-active">@Model.PromoMessage</span>
+    <span class="ms-2">Applied Code: <strong>@Model.AppliedPromoCode</strong></span>
+</div>
+
+<section class="surface-card mb-4">
+<form asp-action="Index" method="get" class="row g-2">
+    <div class="col-md-4">
+        <label for="promoCode" class="form-label">Promo code</label>
+        <input id="promoCode" name="promoCode" class="form-control" value="@Model.PromoCode" />
+    </div>
+    <div class="col-md-2 align-self-end d-grid">
+        <button type="submit" class="btn btn-primary">Recalculate</button>
+    </div>
+    <div class="col-md-3 align-self-end d-grid">
+        <a asp-controller="Products" asp-action="Index" asp-route-promoCode="@Model.PromoCode" class="btn btn-outline-secondary">Back to Products</a>
+    </div>
+</form>
+</section>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <section class="surface-card table-shell">
+        <table class="table table-hover align-middle rounded-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Base</th>
+                    <th>Discounted</th>
+                </tr>
+            </thead>
+            <tbody>
+            @if (!Model.Items.Any())
+            {
+                <tr>
+                    <td colspan="3" class="text-muted">No products in cart yet.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.BasePrice.ToString("C")</td>
+                        <td>@item.DiscountedPrice.ToString("C")</td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+        </section>
+    </div>
+    <div class="col-lg-4">
+        <div class="card summary-card h-100">
+            <div class="card-body">
+                <p class="mb-2"><strong>Items:</strong> @Model.ItemCount</p>
+                <p class="mb-2"><strong>Subtotal:</strong> @Model.Subtotal.ToString("C")</p>
+                <p class="mb-2"><strong>Savings:</strong> <span class="text-success">@Model.Savings.ToString("C")</span></p>
+                <p class="mb-0 fs-5"><strong>Final Total:</strong> @Model.FinalTotal.ToString("C")</p>
+            </div>
+        </div>
+    </div>
+</div>

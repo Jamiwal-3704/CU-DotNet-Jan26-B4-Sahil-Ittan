@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Week11_Assessement</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Week11_Assessement.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="app-header mb-4">
+        <nav class="navbar navbar-expand-sm navbar-dark">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand app-brand" asp-area="" asp-controller="Products" asp-action="Index" aria-label="GlobalMart Home">
+                    <span class="brand-mark" aria-hidden="true">
+                        <img src="~/images/globalmart-logo.svg" class="brand-logo" alt="" />
+                    </span>
+                    <span>GlobalMart</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end" id="navbarMain">
+                    <ul class="navbar-nav ms-auto align-items-sm-center gap-sm-2">
+                        <li class="nav-item">
+                            <a class="nav-link nav-btn-link" asp-area="" asp-controller="Products" asp-action="Index">
+                                <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                    <path d="M12 3.2 3 10.1V21h6.4v-5.6h5.2V21H21V10.1L12 3.2z" fill="currentColor" />
+                                </svg>
+                                <span>Home</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-btn-link" asp-area="" asp-controller="Cart" asp-action="Index">
+                                <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                    <path d="M7.1 5h14.2l-1.8 7.6a2.1 2.1 0 0 1-2 1.6H10a2.1 2.1 0 0 1-2.1-1.7L6.3 3.9H3V2h4.8l.6 3zm3.3 15.9a1.7 1.7 0 1 1 0-3.4 1.7 1.7 0 0 1 0 3.4zm7.1 0a1.7 1.7 0 1 1 0-3.4 1.7 1.7 0 0 1 0 3.4z" fill="currentColor" />
+                                </svg>
+                                <span>Cart</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container app-shell">
+        <main role="main" class="pb-4">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="footer text-muted">
+        <div class="container">
+            &copy; 2026 - GlobalMart Pricing Engine
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,27 @@
+<svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">GlobalMart Logo</title>
+  <desc id="desc">A circular monogram with G and M representing GlobalMart.</desc>
+  <defs>
+    <linearGradient id="bg" x1="24" y1="18" x2="136" y2="142" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8C23A"/>
+      <stop offset="0.48" stop-color="#F87171"/>
+      <stop offset="1" stop-color="#0D7C78"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="44" y1="34" x2="118" y2="130" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.84"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.18"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="80" cy="80" r="72" fill="url(#bg)"/>
+  <circle cx="80" cy="80" r="72" fill="url(#shine)"/>
+  <circle cx="80" cy="80" r="63" fill="#0E2F32" fill-opacity="0.2"/>
+
+  <path d="M53 82C53 64.88 66.88 51 84 51C93.03 51 101.16 54.82 106.91 60.95L99.76 67.25C95.74 63.16 90.13 60.6 84 60.6C72.18 60.6 62.6 70.18 62.6 82C62.6 93.82 72.18 103.4 84 103.4C93.95 103.4 102.31 96.61 104.69 87.4H84V77.8H115.7V82C115.7 99.12 101.82 113 84.7 113H84C66.88 113 53 99.12 53 82Z" fill="#F8FBFF"/>
+
+  <path d="M61 112L61 54H72.2L80 66.4L87.8 54H99L99 112H88.6V72.9L80 85.6L71.4 72.9V112H61Z" fill="#FFE5B0"/>
+
+  <path d="M109.2 109.4C109.2 104.98 112.78 101.4 117.2 101.4H120.8C125.22 101.4 128.8 104.98 128.8 109.4V112H109.2V109.4Z" fill="#F8FBFF" fill-opacity="0.95"/>
+  <circle cx="116.4" cy="114.7" r="4.1" fill="#F8FBFF"/>
+  <circle cx="125.5" cy="114.7" r="4.1" fill="#F8FBFF"/>
+</svg>

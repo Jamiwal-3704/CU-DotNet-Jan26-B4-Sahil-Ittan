@@ -1,0 +1,38 @@
+@model EditProductInputModel
+@{
+    ViewData["Title"] = "Edit Product";
+    var promoCode = (ViewData["PromoCode"] as string) ?? "WINTER25";
+}
+
+<h1 class="mb-3">Edit Product</h1>
+
+<div class="card summary-card" style="max-width: 720px;">
+    <div class="card-body">
+        <form asp-action="Edit" method="post" class="row g-2">
+            @Html.AntiForgeryToken()
+            <input asp-for="Id" type="hidden" />
+            <input type="hidden" name="promoCode" value="@promoCode" />
+
+            <div class="col-md-6">
+                <label asp-for="Name" class="form-label">Product name</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="BasePrice" class="form-label">Base price</label>
+                <input asp-for="BasePrice" class="form-control" />
+                <span asp-validation-for="BasePrice" class="text-danger"></span>
+            </div>
+
+            <div class="col-12 mt-3">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Index" asp-route-promoCode="@promoCode" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

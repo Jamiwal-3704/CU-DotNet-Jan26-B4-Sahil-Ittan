@@ -1,0 +1,132 @@
+@model ProductsLandingViewModel
+@{
+    ViewData["Title"] = "Products";
+    var statusMessage = ViewData["StatusMessage"] as string;
+}
+
+<section class="hero-panel mb-4">
+    <p class="eyebrow mb-2">Centralized Pricing Engine</p>
+    <h1 class="mb-2">GlobalMart Product Studio</h1>
+    <p class="mb-0 text-secondary">One shared pricing service powers listing and checkout totals with perfect consistency.</p>
+</section>
+
+@if (!string.IsNullOrWhiteSpace(statusMessage))
+{
+    <div class="alert alert-success shadow-sm">@statusMessage</div>
+}
+
+<section class="row g-3 mb-4">
+    <div class="col-lg-4">
+        <div class="metric-card">
+            <p class="metric-label">Catalog Value</p>
+            <p class="metric-value">@Model.TotalBasePrice.ToString("C")</p>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="metric-card">
+            <p class="metric-label">Discounted Value</p>
+            <p class="metric-value">@Model.TotalDiscountedPrice.ToString("C")</p>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="metric-card">
+            <p class="metric-label">You Save</p>
+            <p class="metric-value text-success">@Model.TotalSavings.ToString("C")</p>
+        </div>
+    </div>
+</section>
+
+<div class="promo-strip mb-4">
+    <span class="promo-active">@Model.PromoMessage</span>
+    <span class="ms-2">Available:</span>
+    @foreach (var code in Model.SupportedPromoCodes)
+    {
+        <span class="badge bg-dark-subtle text-dark me-2">@code</span>
+    }
+</div>
+
+<section class="surface-card mb-4">
+    <form asp-action="AddProduct" method="post" class="row g-2">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="promoCode" value="@Model.PromoCode" />
+        <div class="col-md-5">
+            <label asp-for="AddProduct.Name" class="form-label">Product name</label>
+            <input asp-for="AddProduct.Name" class="form-control" />
+            <span asp-validation-for="AddProduct.Name" class="text-danger"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="AddProduct.BasePrice" class="form-label">Base price</label>
+            <input asp-for="AddProduct.BasePrice" class="form-control" />
+            <span asp-validation-for="AddProduct.BasePrice" class="text-danger"></span>
+        </div>
+        <div class="col-md-3 align-self-end">
+            <button type="submit" class="btn btn-success w-100">Add Product</button>
+        </div>
+    </form>
+</section>
+
+<section class="surface-card mb-4">
+<form asp-action="Index" method="get" class="row g-2">
+    <div class="col-md-4">
+        <label for="promoCode" class="form-label">Promo code</label>
+        <input id="promoCode" name="promoCode" class="form-control" value="@Model.PromoCode" />
+    </div>
+    <div class="col-md-2 align-self-end d-grid">
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </div>
+    <div class="col-md-3 align-self-end d-grid">
+        <a asp-controller="Cart" asp-action="Index" asp-route-promoCode="@Model.PromoCode" class="btn btn-outline-secondary">Go to Cart</a>
+    </div>
+</form>
+</section>
+
+<section class="surface-card table-shell">
+<table class="table table-hover align-middle rounded-table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Base Price</th>
+            <th>Discounted Price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @if (!Model.Products.Any())
+    {
+        <tr>
+            <td colspan="4" class="text-muted">No products yet. Add a product above.</td>
+        </tr>
+    }
+    else
+    {
+        @foreach (var product in Model.Products)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.BasePrice.ToString("C")</td>
+                <td>
+                    @product.FinalPrice.ToString("C")
+                    @if (product.FinalPrice < product.BasePrice)
+                    {
+                        <span class="badge rounded-pill text-bg-success ms-2">Sale</span>
+                    }
+                </td>
+                <td class="action-cell">
+                    <a asp-action="Edit" asp-route-id="@product.Id" asp-route-promoCode="@Model.PromoCode" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <form asp-action="Delete" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@product.Id" />
+                        <input type="hidden" name="promoCode" value="@Model.PromoCode" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this product?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
