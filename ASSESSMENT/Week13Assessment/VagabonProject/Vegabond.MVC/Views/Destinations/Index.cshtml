@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Vegabond.MVC.Models.Destination>
+
+@{
+    ViewData["Title"] = "Destinations";
+}
+
+<h1>Destinations</h1>
+
+@* <p>
+    <a class="btn btn-primary" asp-action="Create">Create New</a>
+</p> *@
+
+@if (!Model?.Any() ?? true)
+{
+    <div class="alert alert-info">No destinations available.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>City</th>
+                <th>Country</th>
+                <th>Description</th>
+                <th>Rating</th>
+                <th>Last Visited</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var d in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(m => d.CityName)</td>
+                    <td>@Html.DisplayFor(m => d.Country)</td>
+                    <td>@Html.DisplayFor(m => d.Description)</td>
+                    <td>@Html.DisplayFor(m => d.Rating)</td>
+                    <td>@(d.LastVisited == default ? "-" : d.LastVisited.ToString("yyyy-MM-dd"))</td>
+                    @* <td>
+                        <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@d.Id">Details</a>
+                        <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@d.Id">Edit</a>
+                        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@d.Id">Delete</a>
+                    </td> *@
+                </tr>
+            }
+        </tbody>
+    </table>
+}
