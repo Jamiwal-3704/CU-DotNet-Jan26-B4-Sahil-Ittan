@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+@model List<VoltGearSystems.Models.Laptop>
+
+<h2>Laptop Inventory</h2>
+
+@if (TempData["success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["success"]
+    </div>
+}
+
+<a asp-action="Create" class="btn btn-success mb-2">Add New</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Model</th>
+            <th>Serial</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ModelName</td>
+                <td>@item.SerialNumber</td>
+                <td>@item.Price</td>
+            </tr>
+        }
+    </tbody>
+</table>

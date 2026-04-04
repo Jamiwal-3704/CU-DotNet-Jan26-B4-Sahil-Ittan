@@ -1,7 +1,8 @@
-using IdentityService.Services;
-using Microsoft.AspNetCore.Identity;
 
-namespace IdentityService
+using Microsoft.EntityFrameworkCore;
+using StudentCourseAPI.Data;
+
+namespace StudentCourseAPI
 {
     public class Program
     {
@@ -16,7 +17,11 @@ namespace IdentityService
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddScoped<TokenService>();
+            builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+            builder.Services.AddControllers().AddXmlSerializerFormatters();
 
             var app = builder.Build();
 
@@ -27,7 +32,6 @@ namespace IdentityService
                 app.UseSwaggerUI();
             }
 
-            // these all are called middleware 
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
