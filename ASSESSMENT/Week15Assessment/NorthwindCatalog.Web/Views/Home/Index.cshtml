@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<section class="home-hero mb-4">
+    <h1 class="display-5 fw-bold mb-3">Welcome to Northwind Catalog</h1>
+    <p class="lead mb-4">
+        Discover categories, explore products faster, and get clear insights with a clean and friendly experience.
+    </p>
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-primary btn-lg" asp-controller="Catalog" asp-action="Index">Go to Main Catalog</a>
+        <a class="btn btn-outline-secondary btn-lg" asp-controller="Home" asp-action="Privacy">Read Privacy Highlights</a>
+    </div>
+</section>
+
+<section class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="home-feature-card h-100">
+            <h5 class="mb-2">Quick Search</h5>
+            <p class="mb-0 text-muted">Find product groups quickly and reduce browsing time with focused navigation.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="home-feature-card h-100">
+            <h5 class="mb-2">Category Insights</h5>
+            <p class="mb-0 text-muted">View useful summaries and understand inventory trends at a glance.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="home-feature-card h-100">
+            <h5 class="mb-2">Faster Decisions</h5>
+            <p class="mb-0 text-muted">Use organized data cards to compare products and make confident choices.</p>
+        </div>
+    </div>
+</section>
+
+<section class="interactive-tip card border-0 shadow-sm">
+    <div class="card-body d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+        <div>
+            <h6 class="text-uppercase text-muted mb-1">Daily Tip</h6>
+            <p id="home-tip-text" class="mb-0 fw-semibold">Use the Main Catalog tab to jump directly into product exploration.</p>
+        </div>
+        <button id="next-tip-btn" type="button" class="btn btn-outline-primary">Show Another Tip</button>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        (() => {
+            const tips = [
+                "Use the Main Catalog tab to jump directly into product exploration.",
+                "Filter by category first to quickly narrow down product lists.",
+                "Open Privacy Highlights anytime to understand how your data is handled.",
+                "Check summary insights before deep-diving into individual products."
+            ];
+
+            const tipText = document.getElementById("home-tip-text");
+            const tipButton = document.getElementById("next-tip-btn");
+            let index = 0;
+
+            tipButton?.addEventListener("click", () => {
+                index = (index + 1) % tips.length;
+                if (tipText) {
+                    tipText.textContent = tips[index];
+                }
+            });
+        })();
+    </script>
+}

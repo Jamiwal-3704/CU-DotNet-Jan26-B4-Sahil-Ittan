@@ -1,0 +1,61 @@
+@model IEnumerable<NorthwindCatalog.Web.DTOs.CategorySummaryDto>
+
+@{
+    ViewData["Title"] = "Category Insights";
+    var summaries = Model.ToList();
+    var totalProducts = summaries.Sum(s => s.ProductCount);
+    var averagePrice = summaries.Any() ? summaries.Average(s => s.AvgPrice) : 0m;
+}
+
+<section class="catalog-hero mb-4">
+    <div>
+        <h1 class="display-6 fw-bold mb-1">Category Insights</h1>
+        <p class="text-muted mb-0">Compare performance across all categories.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-dark">Back to Catalog</a>
+</section>
+
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
+        <article class="metric-card">
+            <small class="text-muted">Total Categories</small>
+            <h3 class="mb-0">@summaries.Count</h3>
+        </article>
+    </div>
+    <div class="col-12 col-md-4">
+        <article class="metric-card">
+            <small class="text-muted">Total Products</small>
+            <h3 class="mb-0">@totalProducts</h3>
+        </article>
+    </div>
+    <div class="col-12 col-md-4">
+        <article class="metric-card">
+            <small class="text-muted">Average Price</small>
+            <h3 class="mb-0">@averagePrice.ToString("C")</h3>
+        </article>
+    </div>
+</div>
+
+<section class="glass-table table-responsive">
+    <table class="table table-hover align-middle mb-0">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th class="text-center">Product Count</th>
+                <th class="text-end">Average Price</th>
+                <th>Most Expensive Product</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in summaries.OrderByDescending(x => x.ProductCount))
+            {
+                <tr>
+                    <td class="fw-semibold">@s.CategoryName</td>
+                    <td class="text-center"><span class="badge rounded-pill bg-dark">@s.ProductCount</span></td>
+                    <td class="text-end">@s.AvgPrice.ToString("C")</td>
+                    <td>@(string.IsNullOrWhiteSpace(s.MostExpensiveProduct) ? "-" : s.MostExpensiveProduct)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>

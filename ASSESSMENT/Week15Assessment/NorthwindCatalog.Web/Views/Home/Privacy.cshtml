@@ -1,0 +1,78 @@
+﻿@{
+    ViewData["Title"] = "Privacy Policy";
+}
+<section class="privacy-hero mb-4">
+    <h1 class="display-6 fw-bold mb-3">@ViewData["Title"]</h1>
+    <p class="lead mb-0">
+        Your trust matters. We keep your data usage simple, transparent, and focused only on improving your catalog experience.
+    </p>
+</section>
+
+<section class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="privacy-card h-100">
+            <h5 class="mb-2">What We Collect</h5>
+            <p class="text-muted mb-0">Only the minimum application data required for navigation, personalization, and performance improvements.</p>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="privacy-card h-100">
+            <h5 class="mb-2">Why We Collect It</h5>
+            <p class="text-muted mb-0">To provide relevant content, maintain app reliability, and continuously improve your product discovery flow.</p>
+        </div>
+    </div>
+</section>
+
+<section class="card border-0 shadow-sm mb-3">
+    <div class="card-body">
+        <h6 class="text-uppercase text-muted mb-3">Interactive Privacy Checklist</h6>
+        <p class="mb-3">Mark each point once reviewed:</p>
+        <div class="d-grid gap-2">
+            <label class="form-check">
+                <input class="form-check-input privacy-check" type="checkbox" />
+                <span class="form-check-label">I understand the type of data used in this application.</span>
+            </label>
+            <label class="form-check">
+                <input class="form-check-input privacy-check" type="checkbox" />
+                <span class="form-check-label">I understand why data is used to improve app usability.</span>
+            </label>
+            <label class="form-check">
+                <input class="form-check-input privacy-check" type="checkbox" />
+                <span class="form-check-label">I know where to find updated privacy details.</span>
+            </label>
+        </div>
+        <div class="progress mt-3" role="progressbar" aria-label="Privacy checklist completion" aria-valuemin="0" aria-valuemax="100">
+            <div id="privacy-progress" class="progress-bar" style="width: 0%">0%</div>
+        </div>
+        <p id="privacy-feedback" class="mt-2 mb-0 fw-semibold text-muted">Review the checklist to track completion.</p>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        (() => {
+            const checks = Array.from(document.querySelectorAll(".privacy-check"));
+            const progress = document.getElementById("privacy-progress");
+            const feedback = document.getElementById("privacy-feedback");
+
+            const updateState = () => {
+                const completed = checks.filter(c => c.checked).length;
+                const percentage = Math.round((completed / checks.length) * 100);
+
+                if (progress) {
+                    progress.style.width = `${percentage}%`;
+                    progress.textContent = `${percentage}%`;
+                }
+
+                if (feedback) {
+                    feedback.textContent = completed === checks.length
+                        ? "Great! You are fully informed about our privacy highlights."
+                        : `You have reviewed ${completed} of ${checks.length} privacy points.`;
+                }
+            };
+
+            checks.forEach(check => check.addEventListener("change", updateState));
+            updateState();
+        })();
+    </script>
+}

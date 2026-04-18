@@ -1,0 +1,215 @@
+@model NorthwindCatalog.Web.DTOs.CategoryIndexViewModel
+
+@{
+    ViewData["Title"] = "Northwind Catalog";
+    var visibleCategories = Model.Categories
+        .Where(c => !string.Equals(c.CategoryName, "Furniture", StringComparison.OrdinalIgnoreCase))
+        .ToList();
+    var selectedCategory = visibleCategories.FirstOrDefault(c => c.CategoryId == Model.SelectedCategoryId);
+    var summaries = Model.Summaries.ToList();
+    var totalProducts = summaries.Sum(s => s.ProductCount);
+    var avgPrice = summaries.Any() ? summaries.Average(s => s.AvgPrice) : 0m;
+
+    string ResolveCategoryImageUrl(string? categoryName, string? apiImageUrl)
+    {
+        if (string.IsNullOrWhiteSpace(categoryName))
+        {
+            return "/images/default.svg";
+        }
+
+        var localFileName = categoryName switch
+        {
+            "Beverages" => "Beverages.jpeg",
+            "Condiments" => "Condiments.jpeg",
+            "Confections" => "Confections.jpeg",
+            "Dairy Products" => "Dairy Products.jpeg",
+            "Grains/Cereals" => "GrainsCereals.jpeg",
+            "Meat/Poultry" => "MeatPoultry.jpeg",
+            "Produce" => "Produce.jpeg",
+            "Seafood" => "Seafood.jpeg",
+            _ => $"{categoryName.Replace("/", string.Empty).Replace("\\", string.Empty)}.jpeg"
+        };
+
+        if (!string.IsNullOrWhiteSpace(localFileName))
+        {
+            return $"/images/{localFileName}";
+        }
+
+        return string.IsNullOrWhiteSpace(apiImageUrl) ? "/images/default.svg" : apiImageUrl;
+    }
+
+    string CategoryEmoji(int categoryId) => categoryId switch
+    {
+        1 => "☕",
+        2 => "🧂",
+        3 => "🍫",
+        4 => "🧀",
+        5 => "🌾",
+        6 => "🥩",
+        7 => "🥬",
+        8 => "🦐",
+        _ => "📦"
+    };
+}
+
+<section class="nw-header mb-4">
+    <div class="nw-brand-icon">📦</div>
+    <div>
+        <h1 class="h3 fw-bold mb-1">Northwind Catalog</h1>
+        <p class="text-muted mb-0">DB First · API · MVC</p>
+    </div>
+    <span class="badge text-bg-secondary ms-auto">Week 15 Assessment</span>
+</section>
+
+<div class="nw-tabs mb-4">
+    <a asp-action="Index" asp-route-tab="catalog" class="nw-tab @(Model.ActiveTab == "catalog" ? "active" : string.Empty)">Catalog</a>
+    <a asp-action="Index" asp-route-tab="summary" class="nw-tab @(Model.ActiveTab == "summary" ? "active" : string.Empty)">Summary</a>
+</div>
+
+@if (Model.ActiveTab == "catalog")
+{
+    <section class="row g-4 mb-4">
+        <div class="col-12 col-md-4">
+            <article class="nw-stat-card">
+                <div class="nw-stat-icon">🗂️</div>
+                <div>
+                    <div class="nw-stat-label">Categories</div>
+                    <div class="nw-stat-value">@visibleCategories.Count</div>
+                </div>
+            </article>
+        </div>
+        <div class="col-12 col-md-4">
+            <article class="nw-stat-card">
+                <div class="nw-stat-icon">📦</div>
+                <div>
+                    <div class="nw-stat-label">Products</div>
+                    <div class="nw-stat-value">@totalProducts</div>
+                </div>
+            </article>
+        </div>
+        <div class="col-12 col-md-4">
+            <article class="nw-stat-card">
+                <div class="nw-stat-icon">💲</div>
+                <div>
+                    <div class="nw-stat-label">Avg Price</div>
+                    <div class="nw-stat-value">@avgPrice.ToString("C")</div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    @if (!Model.SelectedCategoryId.HasValue)
+    {
+        <h2 class="h4 fw-bold mb-3">Browse Categories</h2>
+        <div class="row g-4 mb-5">
+            @foreach (var c in visibleCategories)
+            {
+                var imageUrl = ResolveCategoryImageUrl(c.CategoryName, c.ImageUrl);
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <article class="nw-category-card">
+                        <img src="@imageUrl" alt="@c.CategoryName" class="nw-category-image" onerror="this.onerror=null;this.src='/images/default.svg';" />
+                        <div class="nw-category-emoji">@CategoryEmoji(c.CategoryId)</div>
+                        <div class="p-3">
+                            <h3 class="h6 fw-bold mb-2">@c.CategoryName</h3>
+                            <a asp-action="Index" asp-route-tab="catalog" asp-route-categoryId="@c.CategoryId" class="btn btn-dark w-100">View Products</a>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <section class="d-flex align-items-center gap-3 mb-4">
+            <a asp-action="Index" asp-route-tab="catalog" class="btn btn-outline-secondary btn-sm">← Back</a>
+            <div>
+                <h2 class="h4 fw-bold mb-1">@CategoryEmoji(selectedCategory?.CategoryId ?? 0) @selectedCategory?.CategoryName</h2>
+                <p class="text-muted mb-0">@Model.Products.Count() products</p>
+            </div>
+        </section>
+
+        <section class="products-toolbar mb-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <h4 class="mb-0">Products</h4>
+            <input id="productFilter"
+                   type="text"
+                   class="form-control product-filter"
+                   placeholder="Search products by name..." />
+        </section>
+
+        <div class="row g-4" id="productGrid">
+            @foreach (var p in Model.Products)
+            {
+                var outOfStock = p.UnitsInStock == 0;
+                <div class="col-12 col-md-6 col-lg-4 product-item" data-name="@p.ProductName.ToLowerInvariant()">
+                    <article class="product-card">
+                        <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                            <h6 class="fw-semibold mb-0">@p.ProductName</h6>
+                            @if (outOfStock)
+                            {
+                                <span class="badge text-bg-danger">Out</span>
+                            }
+                            else
+                            {
+                                <span class="badge text-bg-secondary">In stock</span>
+                            }
+                        </div>
+                        <div class="product-metrics">
+                            <div class="metric-row">
+                                <span class="text-muted">Unit Price</span>
+                                <span class="fw-medium">@p.UnitPrice.ToString("C")</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="text-muted">Units</span>
+                                <span class="fw-medium">@p.UnitsInStock</span>
+                            </div>
+                            <div class="metric-row border-top pt-2">
+                                <span class="text-muted">Inventory Value</span>
+                                <span class="fw-bold text-primary">@p.InventoryValue.ToString("C")</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+
+        <p id="noProductsMessage" class="text-muted mt-3 d-none">No products match your search.</p>
+    }
+}
+else
+{
+    <section>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h4 fw-bold mb-0">Category Analytics</h2>
+        </div>
+
+        <div class="table-responsive nw-summary-card">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th class="text-end">Product Count</th>
+                        <th class="text-end">Avg Price</th>
+                        <th>Most Expensive</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var s in summaries)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@s.CategoryName</td>
+                            <td class="text-end">@s.ProductCount</td>
+                            <td class="text-end">@s.AvgPrice.ToString("C")</td>
+                            <td>@(string.IsNullOrWhiteSpace(s.MostExpensiveProduct) ? "-" : s.MostExpensiveProduct)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+}
+
+@section Scripts {
+    <script>
+        window.catalogUi?.initProductFilter("productFilter", "productGrid", "noProductsMessage");
+    </script>
+}
