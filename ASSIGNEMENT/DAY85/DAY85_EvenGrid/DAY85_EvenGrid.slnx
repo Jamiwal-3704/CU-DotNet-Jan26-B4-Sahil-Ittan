@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="DAY85_EventGrid/DAY85_EventGrid.csproj" />
+  <Project Path="NewDemoEventGrid/NewDemoEventGrid.csproj" Id="2d4c121e-0b96-412e-b9a8-e9e01444ebc4" />
+</Solution>
