@@ -198,29 +198,29 @@ Recommended improvement:
 
 ## Overall Azure Resources
 
-![Overall Resource Group](Images/OverallResourceGroup.png)
+![Overall Resource Group](DAY85_EvenGrid/Images/OverallResourceGroup.png)
 
-![Resource Group](Images/resourceGrpoup.png)
+![Resource Group](DAY85_EvenGrid/Images/resourceGrpoup.png)
 
 ## Storage and Event Integration
 
-![Storage Account](Images/StorageAccount.png)
+![Storage Account](DAY85_EvenGrid/Images/StorageAccount.png)
 
-![Event Grid Function](Images/EventGridFunction.png)
+![Event Grid Function](DAY85_EvenGrid/Images/EventGridFunction.png)
 
 ## Logic App
 
-![Logic App](Images/LogicApp.png)
+![Logic App](DAY85_EvenGrid/Images/LogicApp.png)
 
-![Logic App Designer](Images/LogicAppDesigner.png)
+![Logic App Designer](DAY85_EvenGrid/Images/LogicAppDesigner.png)
 
 ## Deployment and Runtime
 
-![Publish Application](Images/PublishApplication.png)
+![Publish Application](DAY85_EvenGrid/Images/PublishApplication.png)
 
-![Container](Images/Container.png)
+![Container](DAY85_EvenGrid/Images/Container.png)
 
-![Final Output](Images/FinalOutPut.png)
+![Final Output](DAY85_EvenGrid/Images/FinalOutPut.png)
 
 ---
 
