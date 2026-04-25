@@ -1,0 +1,158 @@
+@model InsureTrust.Web.Models.CreatePolicyTypeViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Create New Policy Type";
+}
+
+<div class="page-header">
+    <a href="@Url.Action("Dashboard")" style="font-size:12px;color:var(--gray-500);text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-bottom:10px;font-weight:700;font-family:'Space Mono',monospace;text-transform:uppercase">← Back to Dashboard</a>
+    <h1>Create New Policy Type</h1>
+    <p>Once created, this policy will immediately appear for all customers to purchase</p>
+</div>
+
+<div class="alert alert-info" style="margin-bottom:1.5rem">
+    🔔 <strong>Real-time visibility:</strong> The new policy type will be visible immediately on the customer dashboard after saving.
+</div>
+
+<div class="grid-2" style="align-items:start">
+    <div class="card">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="All" class="validation-summary-errors"></div>
+        }
+
+        <form method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="form-section">
+                <div class="form-section-title">Basic Information</div>
+                <div class="form-group">
+                    <label class="form-label">Policy Type Name <span class="req">*</span></label>
+                    <input asp-for="Name" class="form-control" placeholder="e.g. Cyber Insurance, Travel Insurance" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                    <span class="form-hint">This name will appear on the customer buy page</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category <span class="req">*</span></label>
+                    <select asp-for="Category" class="form-control">
+                        <option value="Personal">Personal</option>
+                        <option value="Business">Business</option>
+                    </select>
+                    <span class="form-hint">Personal plans appear first; Business plans are shown as Enterprise</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description <span class="req">*</span></label>
+                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Brief description shown to customers when browsing plans..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Coverage Details</label>
+                    <input asp-for="CoverageDetails" class="form-control" placeholder="e.g. Data breach, Ransomware, Business interruption (comma-separated)" />
+                    <span class="form-hint">Comma-separated list of coverage items shown on the plan card</span>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Icon</div>
+                <input type="hidden" asp-for="Icon" id="iconInput" value="shield" />
+                <div class="form-hint" style="margin-bottom:10px">Select an icon to represent this policy type</div>
+                <div class="icon-picker">
+                    @{
+                        var icons = new[] {
+                            ("shield","🛡️"), ("heart","❤️"), ("car","🚗"), ("home","🏠"),
+                            ("building","🏢"), ("users","👥"), ("settings","⚙️"),
+                            ("plane","✈️"), ("umbrella","☂️"), ("phone","📱"),
+                            ("laptop","💻"), ("money","💰"), ("fire","🔥"),
+                            ("water","💧")
+                        };
+                    }
+                    @foreach (var (key, emoji) in icons)
+                    {
+                        <div class="icon-option @(Model.Icon == key || (string.IsNullOrEmpty(Model.Icon) && key == "shield") ? "selected" : "")"
+                             data-icon="@key" title="@key">@emoji</div>
+                    }
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Pricing &amp; Tenure</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Base Monthly Premium (₹) <span class="req">*</span></label>
+                        <input asp-for="BaseMonthlyPremium" class="form-control" type="number" min="1000" step="500" placeholder="5000" />
+                        <span class="form-hint">Customers can choose ₹5K, ₹10K, or ₹15K packages</span>
+                    </div>
+                    <div></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Min Tenure (months)</label>
+                        <input asp-for="MinTenureMonths" class="form-control" type="number" min="1" max="12" placeholder="12" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Max Tenure (months)</label>
+                        <input asp-for="MaxTenureMonths" class="form-control" type="number" min="12" placeholder="120" />
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:0.5rem">
+                <button type="submit" class="btn btn-gold" style="padding:12px 24px;font-size:15px">
+                    ✓ Create &amp; Publish Policy Type
+                </button>
+                <a href="@Url.Action("Dashboard")" class="btn">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Live Preview -->
+    <div style="position:sticky;top:80px">
+        <div style="font-size:11px;font-weight:800;color:var(--black);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;font-family:'Space Mono',monospace;background:var(--black);color:var(--yellow);display:inline-block;padding:4px 12px;border:2px solid var(--black)">Live Preview</div>
+        <div style="font-size:11px;color:var(--gray-500);margin-bottom:1rem;font-weight:500">This is how customers will see this policy on the Buy Insurance page</div>
+
+        <div class="policy-type-card" id="preview-card" style="pointer-events:none">
+            <div class="ptc-icon" id="preview-icon">🛡️</div>
+            <div class="ptc-name" id="preview-name">Policy Name</div>
+            <div class="ptc-cat" id="preview-cat">Personal Insurance</div>
+            <div class="ptc-desc" id="preview-desc">Description will appear here...</div>
+            <div class="ptc-premium">From <strong id="preview-premium">₹5,000</strong>/month</div>
+            <div id="preview-coverage" style="font-size:12px;color:var(--gray-500);margin-top:8px;font-weight:600"></div>
+        </div>
+
+        <div class="card" style="margin-top:1.25rem;background:#D4FAE1;border-color:var(--black)">
+            <div style="font-size:13px;font-weight:800;font-family:'Space Mono',monospace;color:var(--black);margin-bottom:8px;text-transform:uppercase">✓ Immediate Effect</div>
+            <div style="font-size:12px;color:var(--black);font-weight:500;line-height:1.7">After you click "Create & Publish", this policy type will instantly appear on every customer's "Buy Insurance" page. All registered users can immediately purchase it.</div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const iconMap = {
+        shield:'🛡️', heart:'❤️', car:'🚗', home:'🏠', building:'🏢',
+        users:'👥', settings:'⚙️', plane:'✈️', umbrella:'☂️', phone:'📱',
+        laptop:'💻', money:'💰', fire:'🔥', water:'💧'
+    };
+
+    function updatePreview() {
+        const name = document.querySelector('[name="Name"]')?.value || 'Policy Name';
+        const cat = document.querySelector('[name="Category"]')?.value || 'Personal';
+        const desc = document.querySelector('[name="Description"]')?.value || 'Description will appear here...';
+        const premium = document.querySelector('[name="BaseMonthlyPremium"]')?.value || '5000';
+        const coverage = document.querySelector('[name="CoverageDetails"]')?.value || '';
+        const icon = document.getElementById('iconInput')?.value || 'shield';
+
+        document.getElementById('preview-name').textContent = name;
+        document.getElementById('preview-cat').textContent = cat + ' Insurance';
+        document.getElementById('preview-desc').textContent = desc;
+        document.getElementById('preview-premium').textContent = '₹' + parseInt(premium || 0).toLocaleString('en-IN');
+        document.getElementById('preview-icon').textContent = iconMap[icon] || '📋';
+        const parts = coverage.split(',').filter(Boolean);
+        document.getElementById('preview-coverage').textContent = parts.length > 0 ? '✓ ' + parts[0].trim() : '';
+    }
+
+    document.querySelectorAll('input, select, textarea').forEach(el => el.addEventListener('input', updatePreview));
+    document.querySelectorAll('.icon-option').forEach(opt => opt.addEventListener('click', () => setTimeout(updatePreview, 50)));
+    updatePreview();
+</script>
+}

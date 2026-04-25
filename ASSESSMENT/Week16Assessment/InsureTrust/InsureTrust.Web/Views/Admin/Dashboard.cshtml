@@ -1,0 +1,246 @@
+@model InsureTrust.Web.Models.AdminDashboardViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="page-header">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem">
+        <div>
+            <h1>Admin Dashboard</h1>
+            <p>Insure Trust management console</p>
+        </div>
+        <a href="@Url.Action("CreatePolicyType")" class="btn btn-gold">+ Create New Policy Type</a>
+    </div>
+</div>
+
+<div class="metrics-grid">
+    <div class="metric-card blue">
+        <div class="metric-label">Total Customers</div>
+        <div class="metric-value">@Model.TotalUsers</div>
+        <div class="metric-sub">registered users</div>
+    </div>
+    <div class="metric-card gold">
+        <div class="metric-label">Total Policies</div>
+        <div class="metric-value">@Model.TotalPolicies</div>
+        <div class="metric-sub">all statuses</div>
+    </div>
+    <div class="metric-card @(Model.PendingCount > 0 ? "red" : "green")">
+        <div class="metric-label">Pending Approvals</div>
+        <div class="metric-value">@Model.PendingCount</div>
+        <div class="metric-sub">awaiting action</div>
+    </div>
+    <div class="metric-card @(Model.OpenTickets > 0 ? "red" : "green")">
+        <div class="metric-label">Open Tickets</div>
+        <div class="metric-value">@Model.OpenTickets</div>
+        <div class="metric-sub">support queries</div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <!-- Pending Policy Approvals -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">Pending Policy Approvals</div>
+            @if (Model.PendingPolicies.Any())
+            {
+                <span class="badge badge-pending">@Model.PendingPolicies.Count pending</span>
+            }
+        </div>
+        @if (!Model.PendingPolicies.Any())
+        {
+            <div class="empty-state" style="padding:1.5rem">
+                <span style="font-size:32px;display:block;margin-bottom:8px">✅</span>
+                <div style="font-weight:700;font-family:'Space Mono',monospace;text-transform:uppercase;font-size:13px">No pending approvals</div>
+            </div>
+        }
+        else
+        {
+            @foreach (var p in Model.PendingPolicies)
+            {
+                <div style="padding:14px 0;border-bottom:2px solid var(--black)">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">
+                        <div>
+                            <div style="font-weight:700;font-size:14px;font-family:'Space Mono',monospace">@p.PolicyNumber — @p.PolicyTypeName</div>
+                            <div style="font-size:12px;color:var(--gray-500);margin-top:2px">@p.UserName · @p.UserEmail</div>
+                            <div style="font-size:12px;color:var(--gray-400);margin-top:2px">₹@p.PackageAmount.ToString("N0")/mo · @p.Tenure months</div>
+                        </div>
+                        <div style="display:flex;gap:6px;flex-shrink:0">
+                            <form method="post" asp-action="ApprovePolicy" asp-route-id="@p.Id" style="display:inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="action" value="Grant" />
+                                <button type="submit" class="btn btn-sm btn-success">✓ Approve</button>
+                            </form>
+                            <form method="post" asp-action="ApprovePolicy" asp-route-id="@p.Id" style="display:inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="action" value="Reject" />
+                                <button type="submit" class="btn btn-sm btn-danger">✗ Reject</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- Support Tickets -->
+    <div class="card" id="support">
+        <div class="card-header">
+            <div class="card-title">Support Tickets</div>
+            <span class="badge badge-@(Model.OpenTickets > 0 ? "pending" : "active")">@Model.OpenTickets open</span>
+        </div>
+        @if (!Model.AllTickets.Any())
+        {
+            <div class="empty-state" style="padding:1.5rem">
+                <span style="font-size:32px;display:block;margin-bottom:8px">💬</span>
+                <div style="font-weight:700;font-family:'Space Mono',monospace;text-transform:uppercase;font-size:13px">No tickets</div>
+            </div>
+        }
+        else
+        {
+            @foreach (var t in Model.AllTickets.Take(8))
+            {
+                <div style="padding:10px 0;border-bottom:2px dashed var(--gray-200)">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+                        <div>
+                            <div style="font-weight:700;font-size:13px;font-family:'Space Mono',monospace">@t.TicketNumber — @t.Subject</div>
+                            <div style="font-size:11px;color:var(--gray-400);margin-top:2px;text-transform:uppercase;font-weight:600">@t.UserName · @t.CreatedAt.ToString("dd MMM")</div>
+                        </div>
+                        <form method="post" asp-action="UpdateTicket" asp-route-id="@t.Id" style="display:flex;align-items:center;gap:6px">
+                            @Html.AntiForgeryToken()
+                            <select name="status" class="form-control" style="padding:4px 8px;font-size:12px;width:130px;box-shadow:2px 2px 0 var(--black)" onchange="this.form.submit()">
+                                @if (t.Status == "Pending") {
+                                    <option value="Pending" selected>Pending</option>
+                                } else {
+                                    <option value="Pending">Pending</option>
+                                }
+                                @if (t.Status == "InProgress") {
+                                    <option value="InProgress" selected>In Progress</option>
+                                } else {
+                                    <option value="InProgress">In Progress</option>
+                                }
+                                @if (t.Status == "Resolved") {
+                                    <option value="Resolved" selected>Resolved</option>
+                                } else {
+                                    <option value="Resolved">Resolved</option>
+                                }
+                            </select>
+                        </form>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<!-- Claims Management -->
+<div class="card admin-section">
+    <div class="card-header">
+        <div class="card-title">Claims Management</div>
+        <span style="font-size:12px;color:var(--gray-500);font-family:'Space Mono',monospace;font-weight:700;text-transform:uppercase">@Model.AllClaims.Count total</span>
+    </div>
+    @if (!Model.AllClaims.Any())
+    {
+        <div class="empty-state" style="padding:1.5rem">
+            <span style="font-size:32px;display:block;margin-bottom:8px">📋</span>
+            <div style="font-weight:700;font-family:'Space Mono',monospace;text-transform:uppercase;font-size:13px">No claims submitted yet</div>
+        </div>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Claim #</th><th>Policy</th><th>Customer</th><th>Status</th><th>Filed</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model.AllClaims)
+                    {
+                        <tr>
+                            <td><strong style="font-family:'Space Mono',monospace">@c.ClaimNumber</strong></td>
+                            <td>@c.PolicyNumber — @c.PolicyTypeName</td>
+                            <td>@c.UserName</td>
+                            <td><span class="badge badge-@c.ClaimStatus.ToLower()">@c.ClaimStatus</span></td>
+                            <td style="font-family:'Space Mono',monospace;font-size:12px">@c.ClaimDate.ToString("dd MMM yyyy")</td>
+                            <td>
+                                @if (c.ClaimStatus == "Pending")
+                                {
+                                    <form method="post" asp-action="UpdateClaim" asp-route-id="@c.Id" style="display:flex;gap:6px;align-items:center">
+                                        @Html.AntiForgeryToken()
+                                        <input class="form-control" style="width:110px;padding:4px 8px;font-size:12px;box-shadow:2px 2px 0 var(--black)" type="number" name="amount" placeholder="₹ Amount" />
+                                        <button type="submit" name="action" value="Approve" class="btn btn-xs btn-success">Approve</button>
+                                        <button type="submit" name="action" value="Deny" class="btn btn-xs btn-danger">Deny</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span style="font-size:12px;color:var(--gray-500);font-family:'Space Mono',monospace;font-weight:700">@(c.MaturityAmount > 0 ? "₹" + c.MaturityAmount.ToString("N0") : "Processed")</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<!-- Policy Types Management -->
+<div class="card admin-section">
+    <div class="admin-section-header">
+        <div class="section-title">Insurance Policy Types</div>
+        <a href="@Url.Action("CreatePolicyType")" class="btn btn-gold btn-sm">+ Add New Policy Type</a>
+    </div>
+    <div class="policy-type-grid">
+        @foreach (var pt in Model.PolicyTypes)
+        {
+            <div class="card" style="margin-top:0;box-shadow:var(--shadow)">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+                    <div style="font-size:26px;background:var(--yellow);border:var(--border);width:44px;height:44px;display:flex;align-items:center;justify-content:center">@GetIcon(pt.Icon)</div>
+                    <a href="@Url.Action("EditPolicyType", new { id = pt.Id })" class="btn btn-xs">Edit</a>
+                </div>
+                <div style="font-weight:800;font-size:14px;font-family:'Space Mono',monospace;text-transform:uppercase">@pt.Name</div>
+                <div style="font-size:11px;color:var(--gray-500);margin-top:2px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px">@pt.Category</div>
+                <div style="font-size:12px;color:var(--gray-600);margin-top:6px">@pt.Description</div>
+                <div style="margin-top:10px;font-size:13px;color:var(--black);font-weight:800;font-family:'Space Mono',monospace;background:var(--yellow);display:inline-block;padding:2px 10px;border:2px solid var(--black)">₹@pt.BaseMonthlyPremium.ToString("N0")/mo</div>
+                <div style="font-size:11px;color:var(--gray-400);margin-top:6px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">Added: @pt.CreatedAt.ToString("dd MMM yyyy")</div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- All Users -->
+<div class="card admin-section">
+    <div class="card-header">
+        <div class="card-title">Registered Customers</div>
+        <span style="font-size:12px;color:var(--gray-500);font-family:'Space Mono',monospace;font-weight:700;text-transform:uppercase">@Model.TotalUsers customers</span>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>User #</th><th>Name</th><th>Email</th><th>Role</th><th>KYC</th><th>Joined</th><th>Balance</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model.Users)
+                {
+                    <tr>
+                        <td><strong style="font-family:'Space Mono',monospace">@u.UserNumber</strong></td>
+                        <td>@u.Name</td>
+                        <td style="color:var(--gray-500);font-size:13px">@u.Email</td>
+                        <td><span class="badge badge-@u.Role.ToLower()">@u.Role</span></td>
+                        <td><span class="badge badge-@(u.KycStatus == "Verified" ? "active" : "pending")">@u.KycStatus</span></td>
+                        <td style="color:var(--gray-400);font-size:12px;font-family:'Space Mono',monospace">@u.CreatedAt.ToString("dd MMM yyyy")</td>
+                        <td style="font-family:'Space Mono',monospace;font-weight:700">₹@u.Balance.ToString("N0")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@functions {
+    string GetIcon(string icon) => icon switch {
+        "shield" => "🛡️", "heart" => "❤️", "car" => "🚗", "home" => "🏠",
+        "building" => "🏢", "users" => "👥", "settings" => "⚙️", _ => "📋"
+    };
+}

@@ -1,0 +1,192 @@
+@model InsureTrust.Web.Models.DashboardViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="page-header">
+    <h1>Hey, @Model.User.Name.Split(' ').First() 👋</h1>
+    <p>@Model.User.UserNumber · @Model.User.Email · KYC: <strong style="font-family:'Space Mono',monospace;background:@(Model.User.KycStatus=="Verified"?"var(--green)":"#FFF7CC");padding:2px 8px;border:2px solid var(--black);font-size:12px">@Model.User.KycStatus</strong></p>
+</div>
+
+<div class="nb-ticker">
+    <div class="nb-ticker-inner">
+        <span>⬡ Insure Trust — India's Boldest Insurance Platform</span>
+        <span>★ Policies: Active</span>
+        <span>⬡ Claims Processed Fast</span>
+        <span>★ 256-bit Encrypted</span>
+        <span>⬡ Insure Trust — India's Boldest Insurance Platform</span>
+        <span>★ Policies: Active</span>
+        <span>⬡ Claims Processed Fast</span>
+        <span>★ 256-bit Encrypted</span>
+    </div>
+</div>
+
+<div class="metrics-grid">
+    <div class="metric-card blue">
+        <div class="metric-label">Total Policies</div>
+        <div class="metric-value">@Model.Policies.Count</div>
+        <div class="metric-sub">across all types</div>
+    </div>
+    <div class="metric-card green">
+        <div class="metric-label">Active Policies</div>
+        <div class="metric-value">@Model.Policies.Count(p => p.Status == "Active")</div>
+        <div class="metric-sub">currently insured</div>
+    </div>
+    <div class="metric-card gold">
+        <div class="metric-label">Wallet Balance</div>
+        <div class="metric-value" style="font-size:26px">₹@Model.User.Balance.ToString("N0")</div>
+        <div class="metric-sub">available balance</div>
+    </div>
+    <div class="metric-card @(Model.Policies.Any(p=>p.Status=="Pending") ? "red" : "green")">
+        <div class="metric-label">Pending Approval</div>
+        <div class="metric-value">@Model.Policies.Count(p => p.Status == "Pending")</div>
+        <div class="metric-sub">awaiting admin</div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">My Policies</div>
+                <a href="@Url.Action("Buy","Policy")" class="btn btn-primary btn-sm">+ Buy Policy</a>
+            </div>
+            @if (!Model.Policies.Any())
+            {
+                <div class="empty-state">
+                    <span class="empty-state-icon">🛡️</span>
+                    <div class="empty-state-title">No Policies Yet</div>
+                    <div class="empty-state-sub">Start protecting yourself today</div>
+                    <a href="@Url.Action("Buy","Policy")" class="btn btn-primary">Browse Plans →</a>
+                </div>
+            }
+            else
+            {
+                @foreach (var p in Model.Policies.Take(4))
+                {
+                    <div class="policy-row" style="margin-bottom:10px">
+                        <div class="policy-row-left">
+                            <div class="policy-icon-badge">
+                                @GetPolicyIcon(p.Icon)
+                            </div>
+                            <div>
+                                <div class="policy-number">@p.PolicyNumber</div>
+                                <div class="policy-meta">@p.PolicyTypeName · @p.DaysLeft days left</div>
+                            </div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <span class="badge badge-@p.Status.ToLower()">@p.Status</span>
+                            <div class="policy-amount">
+                                <div class="policy-amount-val">₹@p.PackageAmount.ToString("N0")</div>
+                                <div class="policy-amount-label">/month</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (Model.Policies.Count > 4)
+                {
+                    <a href="@Url.Action("Index","Policy")" style="font-size:13px;color:var(--black);display:block;text-align:center;margin-top:12px;font-weight:700;font-family:'Space Mono',monospace;text-decoration:underline;text-decoration-color:var(--yellow);text-decoration-thickness:2px">
+                        View all @Model.Policies.Count policies →
+                    </a>
+                }
+            }
+        </div>
+
+        <div class="card" style="margin-top:1.25rem">
+            <div class="card-header">
+                <div class="card-title">Quick Actions</div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <a href="@Url.Action("Buy","Policy")" class="btn btn-primary btn-sm">🛡️ Buy Policy</a>
+                <a href="@Url.Action("Submit","Claim")" class="btn btn-sm">📋 Submit Claim</a>
+                <a href="@Url.Action("Create","Support")" class="btn btn-sm">💬 Get Support</a>
+                <a href="#calculator" class="btn btn-sm">🧮 Calculator</a>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Recent Notifications</div>
+                <a href="@Url.Action("Index","NotificationMvc")" class="btn btn-sm btn-xs">View all</a>
+            </div>
+            @if (!Model.RecentNotifications.Any())
+            {
+                <div style="text-align:center;padding:1.5rem;color:var(--gray-400);font-size:13px;font-weight:600;text-transform:uppercase;font-family:'Space Mono',monospace">No notifications yet</div>
+            }
+            else
+            {
+                <div class="notif-list">
+                    @foreach (var n in Model.RecentNotifications)
+                    {
+                        <div class="notif-item @(!n.IsRead ? "unread" : "")">
+                            <div class="notif-dot dot-@n.ColorCode"></div>
+                            <div>
+                                <div class="notif-title">@n.Title</div>
+                                <div class="notif-msg">@n.Message</div>
+                                <div class="notif-meta">@n.CreatedAt.ToString("dd MMM yyyy") · @n.RelatedFeature</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="card" style="margin-top:1.25rem" id="calculator">
+            <div class="card-header">
+                <div class="card-title">Premium Calculator</div>
+                <span style="font-size:11px;color:var(--gray-500);font-family:'Space Mono',monospace;font-weight:700;text-transform:uppercase">Instant Estimate</span>
+            </div>
+            <form id="calcForm">
+                <div class="form-group">
+                    <label class="form-label">Insurance Type</label>
+                    <select class="form-control" id="calc-type">
+                        <option>Term Life</option>
+                        <option>Health</option>
+                        <option>Vehicle</option>
+                        <option>Home</option>
+                        <option>Property</option>
+                        <option>Employee Group Benefits</option>
+                        <option>Engineering</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Age</label>
+                        <input class="form-control" id="calc-age" type="number" value="30" min="18" max="70" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tenure (months)</label>
+                        <input class="form-control" id="calc-tenure" type="number" value="24" min="12" max="120" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Coverage Amount (₹)</label>
+                    <input class="form-control" id="calc-cover" type="number" value="1000000" step="100000" />
+                </div>
+            </form>
+            <div class="calc-result">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                    <div>
+                        <div style="font-size:11px;color:var(--gray-600);font-family:'Space Mono',monospace;font-weight:700;text-transform:uppercase">Monthly Premium</div>
+                        <div style="font-size:26px;font-weight:800;color:var(--black);font-family:'Space Mono',monospace" id="calc-monthly">₹8,333</div>
+                    </div>
+                    <div style="text-align:right">
+                        <div style="font-size:11px;color:var(--gray-600);font-family:'Space Mono',monospace;font-weight:700;text-transform:uppercase">Total Premium</div>
+                        <div style="font-size:26px;font-weight:800;color:var(--black);font-family:'Space Mono',monospace" id="calc-total">₹2,00,000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetPolicyIcon(string icon) => icon switch {
+        "shield" => "🛡️", "heart" => "❤️", "car" => "🚗",
+        "home" => "🏠", "building" => "🏢", "users" => "👥",
+        "settings" => "⚙️", _ => "📋"
+    };
+}

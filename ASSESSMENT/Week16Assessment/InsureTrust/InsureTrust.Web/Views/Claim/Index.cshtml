@@ -1,0 +1,57 @@
+@* ===== CLAIM INDEX ===== *@
+@model List<InsureTrust.Web.Models.ClaimViewModel>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "My Claims";
+}
+
+<div class="page-header">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem">
+        <div>
+            <h1>My Claims</h1>
+            <p>Track all your insurance claims</p>
+        </div>
+        <a href="@Url.Action("Submit")" class="btn btn-primary">+ Submit Claim</a>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card">
+        <div class="empty-state">
+            <span class="empty-state-icon">📋</span>
+            <div class="empty-state-title">No Claims Submitted</div>
+            <div class="empty-state-sub">Claims can only be made on active policies</div>
+            <a href="@Url.Action("Submit")" class="btn btn-primary">Submit a Claim →</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Claim #</th><th>Policy</th><th>Type</th><th>Status</th>
+                        <th>Filed Date</th><th>Docs</th><th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model)
+                    {
+                        <tr>
+                            <td><strong style="font-family:'Space Mono',monospace">@c.ClaimNumber</strong></td>
+                            <td style="font-family:'Space Mono',monospace;font-size:13px">@c.PolicyNumber</td>
+                            <td>@c.PolicyTypeName</td>
+                            <td><span class="badge badge-@c.ClaimStatus.ToLower()">@c.ClaimStatus</span></td>
+                            <td style="font-family:'Space Mono',monospace;font-size:12px">@c.ClaimDate.ToString("dd MMM yyyy")</td>
+                            <td style="font-weight:700;font-family:'Space Mono',monospace;font-size:12px">@c.DocumentsCount files</td>
+                            <td style="font-weight:800;font-family:'Space Mono',monospace">@(c.MaturityAmount > 0 ? "₹" + c.MaturityAmount.ToString("N0") : "—")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

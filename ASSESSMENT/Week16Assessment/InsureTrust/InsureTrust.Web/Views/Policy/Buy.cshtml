@@ -1,0 +1,77 @@
+@model List<InsureTrust.Web.Models.PolicyTypeViewModel>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Buy Insurance";
+}
+
+<div class="page-header">
+    <h1>Choose Your Plan</h1>
+    <p>Select from our range of personal and business insurance products</p>
+</div>
+
+<div class="accent-stripe"></div>
+
+@if (!Model.Any())
+{
+    <div class="card">
+        <div class="empty-state">
+            <span class="empty-state-icon">🛡️</span>
+            <div class="empty-state-title">No Plans Available Yet</div>
+            <div class="empty-state-sub">Check back later — admin is adding new plans</div>
+        </div>
+    </div>
+}
+else
+{
+    var personal = Model.Where(t => t.Category == "Personal").ToList();
+    var business = Model.Where(t => t.Category == "Business").ToList();
+
+    @if (personal.Any())
+    {
+        <div style="margin-bottom:2rem">
+            <div style="display:inline-block;background:var(--black);color:var(--yellow);font-size:12px;font-weight:700;padding:6px 16px;font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;border:2px solid var(--black)">Personal Plans</div>
+            <div class="policy-type-grid">
+                @foreach (var t in personal)
+                {
+                    <a href="@Url.Action("Purchase", new { typeId = t.Id })" class="policy-type-card">
+                        <div class="ptc-icon">@GetIcon(t.Icon)</div>
+                        <div class="ptc-name">@t.Name</div>
+                        <div class="ptc-cat">Personal Insurance</div>
+                        <div class="ptc-desc">@t.Description</div>
+                        <div class="ptc-premium">From <strong>₹@t.BaseMonthlyPremium.ToString("N0")</strong>/month</div>
+                        @if (!string.IsNullOrEmpty(t.CoverageDetails))
+                        {
+                            <div style="font-size:12px;color:var(--gray-500);margin-top:8px;font-weight:600">✓ @t.CoverageDetails.Split(',').First().Trim()</div>
+                        }
+                    </a>
+                }
+            </div>
+        </div>
+    }
+
+    @if (business.Any())
+    {
+        <div>
+            <div style="display:inline-block;background:var(--yellow);color:var(--black);font-size:12px;font-weight:700;padding:6px 16px;font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;border:2px solid var(--black)">Business / Enterprise Plans ⬡</div>
+            <div class="policy-type-grid">
+                @foreach (var t in business)
+                {
+                    <a href="@Url.Action("Purchase", new { typeId = t.Id })" class="policy-type-card featured">
+                        <div class="ptc-icon" style="background:var(--black);">@GetIcon(t.Icon)</div>
+                        <div class="ptc-name">@t.Name</div>
+                        <div class="ptc-cat">Business Insurance · <span style="color:var(--black);font-weight:800">Enterprise</span></div>
+                        <div class="ptc-desc">@t.Description</div>
+                        <div class="ptc-premium">From <strong>₹@t.BaseMonthlyPremium.ToString("N0")</strong>/month</div>
+                    </a>
+                }
+            </div>
+        </div>
+    }
+}
+
+@functions {
+    string GetIcon(string icon) => icon switch {
+        "shield" => "🛡️", "heart" => "❤️", "car" => "🚗", "home" => "🏠",
+        "building" => "🏢", "users" => "👥", "settings" => "⚙️", _ => "📋"
+    };
+}

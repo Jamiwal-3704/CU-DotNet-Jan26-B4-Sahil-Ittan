@@ -1,0 +1,49 @@
+@* ===== SUPPORT INDEX ===== *@
+@model List<InsureTrust.Web.Models.SupportViewModel>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Support";
+}
+
+<div class="page-header">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem">
+        <div>
+            <h1>Support Queries</h1>
+            <p>Track your support tickets</p>
+        </div>
+        <a href="@Url.Action("Create")" class="btn btn-primary">+ New Ticket</a>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card">
+        <div class="empty-state">
+            <span class="empty-state-icon">💬</span>
+            <div class="empty-state-title">No Support Tickets</div>
+            <div class="empty-state-sub">Need help? Create a new ticket and we'll respond within 24 hours</div>
+            <a href="@Url.Action("Create")" class="btn btn-primary">Create Ticket →</a>
+        </div>
+    </div>
+}
+else
+{
+    @foreach (var q in Model)
+    {
+        <div class="card" style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
+                <div style="flex:1">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap">
+                        <strong style="font-family:'Space Mono',monospace;font-size:13px">@q.TicketNumber</strong>
+                        <span class="badge badge-@q.Status.ToLower()">@q.Status</span>
+                    </div>
+                    <div style="font-size:15px;font-weight:700">@q.Subject</div>
+                    <div style="font-size:13px;color:var(--gray-500);margin-top:6px;line-height:1.6">@q.Description</div>
+                    <div style="font-size:11px;color:var(--gray-400);margin-top:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;font-family:'Space Mono',monospace">
+                        Created: @q.CreatedAt.ToString("dd MMM yyyy") · Updated: @q.UpdatedAt.ToString("dd MMM yyyy")
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}

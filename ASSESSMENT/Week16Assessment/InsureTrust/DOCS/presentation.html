@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InsureTrust — Project Presentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #080c14;
+    --bg2: #0f1623;
+    --card: #131b2e;
+    --card2: #182036;
+    --card3: #1c2640;
+    --border: #1f2d47;
+    --border2: #263354;
+    --fg: #eaf0fa;
+    --fg2: #b0bdd0;
+    --muted: #6b7fa0;
+    --accent: #00e09e;
+    --accent2: #33ffbe;
+    --accent-dim: rgba(0,224,158,0.10);
+    --accent-glow: rgba(0,224,158,0.18);
+    --red: #ff5c6a;
+    --yellow: #ffc045;
+    --blue: #4ea0ff;
+    --purple: #b08cff;
+    --orange: #ff8a3d;
+    --pink: #ff6eb4;
+    --cyan: #22d3ee;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Ambient background */
+  .ambient {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0; overflow: hidden;
+  }
+  .ambient .blob {
+    position: absolute; border-radius: 50%;
+    filter: blur(140px); opacity: 0.10;
+    animation: blobFloat 25s ease-in-out infinite alternate;
+  }
+  .ambient .blob:nth-child(1) { width: 700px; height: 700px; background: var(--accent); top: -250px; left: -150px; }
+  .ambient .blob:nth-child(2) { width: 550px; height: 550px; background: var(--blue); bottom: -250px; right: -100px; animation-delay: -8s; }
+  .ambient .blob:nth-child(3) { width: 450px; height: 450px; background: var(--orange); top: 40%; left: 60%; animation-delay: -16s; opacity: 0.05; }
+
+  @keyframes blobFloat {
+    0% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(50px,-40px) scale(1.12); }
+    100% { transform: translate(-30px,30px) scale(0.94); }
+  }
+
+  /* Grid noise overlay */
+  .ambient::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.015) 1px, transparent 0);
+    background-size: 40px 40px;
+  }
+
+  /* Slide system */
+  .deck { position: relative; width: 100vw; height: 100vh; z-index: 1; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    padding: 50px 64px;
+    opacity: 0; transform: translateX(70px);
+    transition: opacity 0.45s cubic-bezier(.4,0,.2,1), transform 0.45s cubic-bezier(.4,0,.2,1);
+    pointer-events: none; will-change: transform, opacity;
+  }
+  .slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+  .slide.exit-left { opacity: 0; transform: translateX(-70px); }
+
+  .slide-inner { max-width: 1280px; width: 100%; }
+
+  /* Progress */
+  .progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--cyan));
+    z-index: 100; transition: width 0.4s ease;
+    box-shadow: 0 0 16px var(--accent-glow);
+  }
+
+  /* Counter */
+  .slide-counter {
+    position: fixed; bottom: 28px; right: 36px;
+    font-size: 14px; color: var(--muted); z-index: 100;
+    font-family: 'Space Grotesk', sans-serif; letter-spacing: 1px;
+  }
+  .slide-counter span { color: var(--accent); font-weight: 700; }
+
+  /* Nav buttons */
+  .nav-btn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    z-index: 100; width: 50px; height: 50px; border-radius: 50%;
+    border: 1px solid var(--border); background: rgba(19,27,46,0.85);
+    color: var(--fg2); font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.25s; backdrop-filter: blur(10px);
+  }
+  .nav-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); box-shadow: 0 0 28px var(--accent-glow); }
+  .nav-btn.prev { left: 18px; }
+  .nav-btn.next { right: 18px; }
+  .nav-btn:disabled { opacity: 0.15; cursor: default; background: rgba(19,27,46,0.85); color: var(--muted); border-color: var(--border); box-shadow: none; }
+
+  /* Dots */
+  .dots-nav { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); display: flex; gap: 7px; z-index: 100; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border); cursor: pointer; transition: all 0.3s; border: none; }
+  .dot.active { background: var(--accent); box-shadow: 0 0 10px var(--accent-glow); transform: scale(1.35); }
+  .dot:hover { background: var(--fg2); }
+
+  /* Key hint */
+  .key-hint { position: fixed; bottom: 26px; left: 36px; font-size: 12px; color: var(--muted); z-index: 100; display: flex; align-items: center; gap: 6px; }
+  .key-hint kbd { background: var(--card); border: 1px solid var(--border); padding: 2px 7px; border-radius: 4px; font-family: 'Space Grotesk'; font-size: 11px; }
+
+  /* Typography */
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
+  .slide-tag { font-size: 12px; text-transform: uppercase; letter-spacing: 3.5px; color: var(--accent); font-weight: 700; margin-bottom: 10px; }
+  .slide-title { font-size: clamp(30px, 3.8vw, 50px); font-weight: 700; line-height: 1.15; margin-bottom: 14px; color: var(--fg); }
+  .slide-subtitle { font-size: clamp(15px, 1.6vw, 19px); color: var(--fg2); line-height: 1.75; max-width: 740px; }
+
+  /* Title slide */
+  .title-slide .slide-title {
+    font-size: clamp(44px, 6.5vw, 80px);
+    background: linear-gradient(135deg, #ffffff 0%, var(--accent2) 60%, var(--cyan) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .title-slide .slide-subtitle { font-size: clamp(17px, 2vw, 22px); }
+  .title-badge {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 7px 18px; border-radius: 999px;
+    border: 1px solid var(--border2); background: var(--card);
+    font-size: 13px; color: var(--fg2); margin-bottom: 28px;
+  }
+  .title-badge .dot-green { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.25; } }
+
+  /* Cards */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 28px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-top: 28px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 28px; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 22px; transition: all 0.3s;
+  }
+  .card:hover { border-color: var(--accent); box-shadow: 0 0 30px var(--accent-dim); transform: translateY(-3px); }
+  .card-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px; }
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .card p, .card div { font-size: 14px; color: var(--fg2); line-height: 1.65; }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; margin-top: 20px; border-radius: 12px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  thead { background: var(--card2); }
+  th { text-align: left; padding: 13px 18px; font-weight: 700; color: var(--fg2); font-size: 12px; text-transform: uppercase; letter-spacing: 1.2px; font-family: 'Space Grotesk'; }
+  td { padding: 12px 18px; border-top: 1px solid var(--border); color: var(--fg); font-size: 15px; }
+  tr:hover td { background: rgba(0,224,158,0.025); }
+
+  /* Badges */
+  .badge { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+  .badge-green { background: rgba(0,224,158,0.10); color: var(--accent); }
+  .badge-red { background: rgba(255,92,106,0.10); color: var(--red); }
+  .badge-blue { background: rgba(78,160,255,0.10); color: var(--blue); }
+  .badge-yellow { background: rgba(255,192,69,0.10); color: var(--yellow); }
+  .badge-purple { background: rgba(176,140,255,0.10); color: var(--purple); }
+  .badge-orange { background: rgba(255,138,61,0.10); color: var(--orange); }
+
+  /* Architecture diagram */
+  .arch-diagram { display: flex; flex-direction: column; align-items: center; gap: 18px; margin-top: 24px; }
+  .arch-box { padding: 14px 28px; border-radius: 12px; font-size: 15px; font-weight: 700; font-family: 'Space Grotesk'; text-align: center; min-width: 170px; transition: all 0.3s; }
+  .arch-box:hover { transform: scale(1.06); }
+  .arch-box .port { font-size: 12px; color: var(--muted); font-weight: 400; display: block; margin-top: 2px; }
+  .arch-gateway { background: linear-gradient(135deg, #132238, #0e3328); border: 2px solid var(--accent); box-shadow: 0 0 40px var(--accent-glow); }
+  .arch-services { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .arch-svc { background: var(--card); border: 1px solid var(--border); }
+  .arch-svc.sahil { border-left: 4px solid var(--red); }
+  .arch-svc.mayank { border-left: 4px solid var(--yellow); }
+  .arch-svc.rajiv { border-left: 4px solid var(--orange); }
+  .arch-svc.tushar { border-left: 4px solid var(--blue); }
+  .arch-svc.shared { border-left: 4px solid var(--accent); }
+  .arch-arrow { color: var(--muted); font-size: 20px; animation: arrowBounce 1.5s ease-in-out infinite; }
+  @keyframes arrowBounce { 0%,100% { transform:translateY(0); } 50% { transform:translateY(5px); } }
+  .arch-dbs { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .arch-db { background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 18px; font-size: 14px; color: var(--fg2); display: flex; align-items: center; gap: 8px; }
+  .arch-db i { color: var(--blue); font-size: 15px; }
+
+  /* Service header */
+  .svc-header { display: flex; align-items: center; gap: 18px; margin-bottom: 6px; }
+  .svc-avatar { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; font-family: 'Space Grotesk'; }
+  .svc-meta { display: flex; gap: 16px; margin-top: 6px; }
+  .svc-meta span { font-size: 14px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+
+  /* Endpoints */
+  .ep-list { margin-top: 14px; }
+  .ep-item { display: flex; align-items: center; gap: 12px; padding: 7px 0; font-size: 14px; border-bottom: 1px solid rgba(31,45,71,0.5); }
+  .ep-method { padding: 3px 10px; border-radius: 5px; font-size: 11px; font-weight: 800; font-family: 'Space Grotesk'; min-width: 48px; text-align: center; }
+  .ep-get { background: rgba(0,224,158,0.10); color: var(--accent); }
+  .ep-post { background: rgba(78,160,255,0.10); color: var(--blue); }
+  .ep-put { background: rgba(255,192,69,0.10); color: var(--yellow); }
+  .ep-delete { background: rgba(255,92,106,0.10); color: var(--red); }
+  .ep-path { color: var(--fg); font-family: 'Space Grotesk', monospace; font-size: 14px; }
+  .ep-desc { color: var(--muted); margin-left: auto; font-size: 13px; }
+
+  /* Check items */
+  .check-item { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; font-size: 15px; color: var(--fg2); line-height: 1.5; }
+  .check-item i { color: var(--accent); margin-top: 3px; font-size: 12px; flex-shrink: 0; }
+
+  /* Notification timeline */
+  .notif-timeline { margin-top: 16px; }
+  .notif-item { display: flex; align-items: flex-start; gap: 14px; padding: 10px 0; border-bottom: 1px solid rgba(31,45,71,0.5); }
+  .notif-dot { width: 11px; height: 11px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; box-shadow: 0 0 8px currentColor; }
+  .notif-dot.green { background: var(--accent); color: var(--accent); }
+  .notif-dot.yellow { background: var(--yellow); color: var(--yellow); }
+  .notif-dot.red { background: var(--red); color: var(--red); }
+  .notif-dot.blue { background: var(--blue); color: var(--blue); }
+  .notif-text { font-size: 14px; color: var(--fg2); line-height: 1.55; }
+  .notif-text strong { color: var(--fg); }
+  .notif-who { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  /* Team cards */
+  .team-card { text-align: center; padding: 22px 16px; }
+  .team-avatar { width: 54px; height: 54px; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; font-family: 'Space Grotesk'; }
+  .team-card h3 { font-size: 16px; margin-bottom: 3px; }
+  .team-card .role { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+  .team-card .owns { font-size: 13px; color: var(--fg2); margin-top: 8px; line-height: 1.5; }
+
+  /* Split layout */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 24px; }
+  .split-col h3 { font-size: 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 9px; }
+
+  /* Stats */
+  .stat-row { display: flex; gap: 18px; margin-top: 24px; }
+  .stat-box { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; text-align: center; }
+  .stat-num { font-size: 34px; font-weight: 800; font-family: 'Space Grotesk'; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 5px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+
+  /* Code */
+  .code-block { background: #080e1a; border: 1px solid var(--border); border-radius: 10px; padding: 18px 22px; font-family: 'Space Grotesk', monospace; font-size: 14px; color: var(--fg2); line-height: 1.8; margin-top: 16px; overflow-x: auto; }
+  .code-block .kw { color: var(--purple); }
+  .code-block .str { color: var(--accent); }
+
+  /* ===== FOLDER STRUCTURE - REDESIGNED ===== */
+  .folder-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 20px;
+  }
+  .folder-group {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 24px;
+    transition: all 0.3s;
+  }
+  .folder-group:hover {
+    border-color: var(--border2);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .folder-group-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .folder-group-header i { font-size: 18px; }
+  .folder-group-header span { font-family: 'Space Grotesk'; font-size: 15px; font-weight: 700; }
+  .folder-group-header .owner-tag { margin-left: auto; font-size: 11px; padding: 2px 10px; border-radius: 999px; font-weight: 700; }
+
+  .tree-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 3px 0;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .tree-line .indent { color: var(--border2); font-family: 'Space Grotesk'; user-select: none; flex-shrink: 0; }
+  .tree-line .icon { flex-shrink: 0; width: 16px; text-align: center; font-size: 13px; }
+  .tree-line .icon.folder-icon { color: var(--yellow); }
+  .tree-line .icon.file-icon { color: var(--blue); }
+  .tree-line .icon.cs-icon { color: var(--purple); }
+  .tree-line .icon.json-icon { color: var(--accent); }
+  .tree-line .name { color: var(--fg); font-family: 'Space Grotesk'; font-weight: 500; }
+  .tree-line .name.folder-name { color: var(--fg); font-weight: 700; }
+  .tree-line .comment { color: var(--muted); font-size: 12px; font-style: italic; margin-left: 6px; }
+  .tree-divider { border: none; border-top: 1px dashed var(--border); margin: 8px 0; }
+
+  /* Relationships */
+  .rel-line { display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--fg2); padding: 5px 0; }
+  .rel-line .entity { color: var(--fg); font-weight: 700; }
+  .rel-line .arrow-r { color: var(--accent); }
+
+  /* Q&A */
+  .qa-icon {
+    width: 90px; height: 90px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #006644);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; color: white; margin-bottom: 28px;
+    box-shadow: 0 0 70px var(--accent-glow), 0 0 140px rgba(0,224,158,0.06);
+  }
+
+  /* Animations */
+  .slide.active .anim-up { animation: animUp 0.5s ease forwards; }
+  .slide.active .anim-up-d1 { animation-delay: 0.08s; }
+  .slide.active .anim-up-d2 { animation-delay: 0.16s; }
+  .slide.active .anim-up-d3 { animation-delay: 0.24s; }
+  .slide.active .anim-up-d4 { animation-delay: 0.32s; }
+  .anim-up { opacity: 0; transform: translateY(24px); }
+  @keyframes animUp { to { opacity: 1; transform: translateY(0); } }
+
+  /* Responsive */
+  @media (max-width: 1000px) {
+    .slide { padding: 40px 32px; }
+    .grid-2, .split, .folder-panel { grid-template-columns: 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .stat-row { flex-wrap: wrap; }
+    .stat-box { min-width: calc(50% - 9px); }
+  }
+  @media (max-width: 600px) {
+    .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .arch-services { flex-direction: column; }
+    .key-hint { display: none; }
+  }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="ambient">
+  <div class="blob"></div>
+  <div class="blob"></div>
+  <div class="blob"></div>
+</div>
+
+<div class="progress-bar" id="progressBar"></div>
+<button class="nav-btn prev" id="prevBtn" aria-label="Previous slide"><i class="fas fa-chevron-left"></i></button>
+<button class="nav-btn next" id="nextBtn" aria-label="Next slide"><i class="fas fa-chevron-right"></i></button>
+<div class="dots-nav" id="dotsNav"></div>
+<div class="slide-counter"><span id="currentNum">1</span> / <span id="totalNum">17</span></div>
+<div class="key-hint"><kbd>&larr;</kbd> <kbd>&rarr;</kbd> Navigate</div>
+
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1: Title -->
+  <div class="slide active title-slide" data-index="0">
+    <div class="slide-inner" style="text-align:center;">
+      <div class="anim-up">
+        <div class="title-badge"><div class="dot-green"></div> Version 3.0 — April 2026</div>
+      </div>
+      <h1 class="slide-title anim-up anim-up-d1">Insure Trust</h1>
+      <p class="slide-subtitle anim-up anim-up-d2" style="margin:0 auto 36px;">
+        A complete microservices-based Insurance Management Platform built with ASP.NET Core — featuring policy lifecycle management, claims processing, payment integration, and real-time notifications.
+      </p>
+      <div class="stat-row anim-up anim-up-d3" style="justify-content:center; max-width:760px; margin-left:auto; margin-right:auto;">
+        <div class="stat-box"><div class="stat-num">5</div><div class="stat-label">Microservices</div></div>
+        <div class="stat-box"><div class="stat-num">6</div><div class="stat-label">Team Members</div></div>
+        <div class="stat-box"><div class="stat-num">.NET 8</div><div class="stat-label">Framework</div></div>
+        <div class="stat-box"><div class="stat-num">30+</div><div class="stat-label">API Endpoints</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: Project Overview -->
+  <div class="slide" data-index="1">
+    <div class="slide-inner">
+      <div class="slide-tag anim-up">Overview</div>
+      <h2 class="slide-title anim-up anim-up-d1">Project At a Glance</h2>
+      <div class="table-wrap anim-up anim-up-d2">
+        <table>
+          <thead><tr><th>Attribute</th><th>Details</th></tr></thead>
+          <tbody>
+            <tr><td>Project Name</td><td><strong>Insure Trust</strong></td></tr>
+            <tr><td>Type</td><td>Insurance Management Platform</td></tr>
+            <tr><td>Architecture</td><td><span class="badge badge-green">Microservices</span></td></tr>
+            <tr><td>Backend</td><td>ASP.NET Core Web API (.NET 8)</td></tr>
+            <tr><td>API Gateway</td><td>Ocelot — Port 5000</td></tr>
+            <tr><td>Frontend</td><td>ASP.NET Core MVC (Razor Pages)</td></tr>
+            <tr><td>Database</td><td>SQL Server + Entity Framework Core (Code-First)</td></tr>
+            <tr><td>Authentication</td><td><span class="badge badge-blue">JWT Bearer Token</span></td></tr>
+            <tr><td>Team Size</td><td>6 Members</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: Architecture -->
+  <div class="slide" data-index="2">
+    <div class="slide-inner" style="text-align:center;">
+      <div class="slide-tag anim-up">System Design</div>
+      <h2 class="slide-title anim-up anim-up-d1">Microservice Architecture</h2>
+      <div class="arch-diagram anim-up anim-up-d2">
+        <div class="arch-box arch-gateway"><i class="fas fa-shield-halved" style="margin-right:8px;"></i> API Gateway (Ocelot)<span class="port">Port 5000</span></div>
+        <div class="arch-arrow"><i class="fas fa-arrows-down-to-line"></i></div>
+        <div class="arch-services">
+          <div class="arch-box arch-svc sahil"><i class="fas fa-user-shield" style="margin-right:5px;"></i> Identity<span class="port">:7001</span></div>
+          <div class="arch-box arch-svc mayank"><i class="fas fa-file-shield" style="margin-right:5px;"></i> Product<span class="port">:7002</span></div>
+          <div class="arch-box arch-svc rajiv"><i class="fas fa-credit-card" style="margin-right:5px;"></i> Payment<span class="port">:7003</span></div>
+          <div class="arch-box arch-svc tushar"><i class="fas fa-gavel" style="margin-right:5px;"></i> Claim<span class="port">:7004</span></div>
+          <div class="arch-box arch-svc shared"><i class="fas fa-calculator" style="margin-right:5px;"></i> Calculator<span class="port">:7005</span></div>
+        </div>
+        <div class="arch-arrow"><i class="fas fa-arrows-down-to-line"></i></div>
+        <div class="arch-dbs">
+          <div class="arch-db"><i class="fas fa-database"></i> IdentityDB</div>
+          <div class="arch-db"><i class="fas fa-database"></i> ProductDB</div>
+          <div class="arch-db"><i class="fas fa-database"></i> PaymentDB</div>
+          <div class="arch-db"><i class="fas fa-database"></i> ClaimDB</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: Team -->
+  <div class="slide" data-index="3">
+    <div class="slide-inner">
+      <div class="slide-tag anim-up">Team</div>
+      <h2 class="slide-title anim-up anim-up-d1">Team Structure & Ownership</h2>
+      <div class="grid-3 anim-up anim-up-d2">
+        <div class="card team-card">
+          <div class="team-avatar" style="background:rgba(255,92,106,0.10);color:var(--red);">S</div>
+          <h3>Sahil</h3><div class="role">Lead Developer</div><div class="owns">Auth, Profile, Notifications, Calculator, Master UI</div>
+        </div>
+        <div class="card team-card">
+          <div class="team-avatar" style="background:rgba(255,192,69,0.10);color:var(--yellow);">M</div>
+          <h3>Mayank</h3><div class="role">Product Specialist</div><div class="owns">PolicyTypes, PolicyTerms, UserPolicies, Policy CRUD</div>
+        </div>
+        <div class="card team-card">
+          <div class="team-avatar" style="background:rgba(255,138,61,0.10);color:var(--orange);">R</div>
+          <h3>Rajiv</h3><div class="role">Transaction Expert</div><div class="owns">Payments, Payment Gateway, Renewals</div>
+        </div>
+        <div class="card team-card">
+          <div class="team-avatar" style="background:rgba(78,160,255,0.10);color:var(--blue);">T</div>
+          <h3>Tushar</h3><div class="role">Customer Experience</div><div class="owns">Claims, Support Queries, Admin Dashboard</div>
+        </div>
+        <div class="card team-card">
+          <div class="team-avatar" style="background:rgba(176,140,255,0.10);color:var(--purple);">A</div>
+          <h3>Aaroh</h3><div class="role">Technical Lead</div><div class="owns">DTOs, Architecture, Code Reviews, DB Design</div>
+        </div>
+        <div class="card team-card">
+          <div class="team-avatar" style="background:rgba(0,224,158,0.10);color:var(--accent);">H</div>
+          <h3>Hritik</h3><div class="role">DevOps Lead</div><div class="owns">CI/CD, Azure Board, Pipeline, Deployment</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: Coding Standards -->
+  <div class="slide" data-index="4">
+    <div class="slide-inner">
+      <div class="slide-tag anim-up">Standards</div>
+      <h2 class="slide-title anim-up anim-up-d1">Coding Conventions</h2>
+      <div class="split anim-up anim-up-d2">
+        <div class="split-col">
+          <h3><i class="fas fa-code" style="color:var(--accent);"></i> Code Rules</h3>
+          <div class="check-item"><i class="fas fa-check"></i> C# 12 on .NET 8</div>
+          <div class="check-item"><i class="fas fa-check"></i> All async methods end with <code style="background:var(--card3);padding:2px 6px;border-radius:4px;font-size:14px;">Async</code></div>
+          <div class="check-item"><i class="fas fa-check"></i> Custom exceptions: BadRequest, NotFound, Forbidden</div>
+          <div class="check-item"><i class="fas fa-check"></i> <code style="background:var(--card3);padding:2px 6px;border-radius:4px;font-size:14px;">ArgumentNullException.ThrowIfNull()</code></div>
+          <div class="check-item"><i class="fas fa-check"></i> No business logic in controllers</div>
+          <div class="check-item"><i class="fas fa-check"></i> Repository pattern — never direct DbContext</div>
+        </div>
+        <div class="split-col">
+          <h3><i class="fas fa-key" style="color:var(--yellow);"></i> Auth & Responses</h3>
+          <div class="check-item"><i class="fas fa-check"></i> JWT from <code style="background:var(--card3);padding:2px 6px;border-radius:4px;font-size:14px;">Authorization: Bearer</code></div>
+          <div class="check-item"><i class="fas fa-check"></i> User ID from <code style="background:var(--card3);padding:2px 6px;border-radius:4px;font-size:14px;">ClaimTypes.NameIdentifier</code></div>
+          <div class="check-item"><i class="fas fa-check"></i> Admin: <code style="background:var(--card3);padding:2px 6px;border-radius:4px;font-size:14px;">[Authorize(Roles="Admin")]</code></div>
+          <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+            <span class="badge badge-green">200 Success</span>
+            <span class="badge badge-yellow">400 Bad Request</span>
+            <span class="badge badge-red">401 Unauthorized</span>
+            <span class="badge badge-red">403 Forbidden</span>
+            <span class="badge badge-blue">404 Not Found</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: Folder Structure REDESIGNED -->
+  <div class="slide" data-index="5">
+    <div class="slide-inner">
+      <div class="slide-tag anim-up">Structure</div>
+      <h2 class="slide-title anim-up anim-up-d1">Project Folder Structure</h2>
+      <div class="folder-panel anim-up anim-up-d2">
+        <!-- Gateway -->
+        <div class="folder-group">
+          <div class="folder-group-header">
+            <i class="fas fa-shield-halved" style="color:var(--accent);"></i>
+            <span>API Gateway</span>
+            <span class="owner-tag badge-green">Port 5000</span>
+          </div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon json-icon"><i class="fas fa-gear"></i></span><span class="name">ocelot.json</span><span class="comment">routing config</span></div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon cs-icon"><i class="fas fa-file-code"></i></span><span class="name">Program.cs</span></div>
+          <div class="tree-line"><span class="indent">└──</span><span class="icon json-icon"><i class="fas fa-file-code"></i></span><span class="name">appsettings.json</span></div>
+        </div>
+        <!-- Identity -->
+        <div class="folder-group" style="border-top:3px solid var(--red);">
+          <div class="folder-group-header">
+            <i class="fas fa-user-shield" style="color:var(--red);"></i>
+            <span>Identity Service</span>
+            <span class="owner-tag badge-red">SAHIL :7001</span>
+          </div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Controllers/</span><span class="comment">Auth, Profile, Notification</span></div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Models/</span><span class="comment">User, Notification</span></div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">DTOs/</span><span class="comment">Auth, Profile, Notification DTOs</span></div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Repositories/</span><span class="comment">IUserRepo, INotificationRepo</span></div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Services/</span><span class="comment">IAuthService, JwtService</span></div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Helpers/</span><span class="comment">JwtHelper, FileValidation</span></div>
+          <div class="tree-line"><span class="indent">└──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">wwwroot/uploads/kyc/</span></div>
+        </div>
+        <!-- Product -->
+        <div class="folder-group" style="border-top:3px solid var(--yellow);">
+          <div class="folder-group-header">
+            <i class="fas fa-file-shield" style="color:var(--yellow);"></i>
+            <span>Product Service</span>
+            <span class="owner-tag badge-yellow">MAYANK :7002</span>
+          </div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Controllers/</span><span class="comment">PolicyController</span></div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Models/</span><span class="comment">PolicyType, PolicyTerm, RequiredField, UserPolicy</span></div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">DTOs/</span><span class="comment">PolicyDtos</span></div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Repositories/</span><span class="comment">IPolicyRepository</span></div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Services/</span><span class="comment">IPolicyService</span></div>
+          <div class="tree-line"><span class="indent">└──</span><span class="icon file-icon"><i class="fas fa-wrench"></i></span><span class="name">PolicyNumberGenerator</span></div>
+        </div>
+        <!-- Payment -->
+        <div class="folder-group" style="border-top:3px solid var(--orange);">
+          <div class="folder-group-header">
+            <i class="fas fa-credit-card" style="color:var(--orange);"></i>
+            <span>Payment Service</span>
+            <span class="owner-tag badge-orange">RAJIV :7003</span>
+          </div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Controllers/</span><span class="comment">PaymentController</span></div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Models/</span><span class="comment">Payment</span></div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Services/</span><span class="comment">IPaymentService, IPaymentGateway, MockPaymentGateway</span></div>
+          <div class="tree-line"><span class="indent">└──</span><span class="icon file-icon"><i class="fas fa-wrench"></i></span><span class="name">PaymentNumberGenerator</span></div>
+        </div>
+        <!-- Claim -->
+        <div class="folder-group" style="border-top:3px solid var(--blue);">
+          <div class="folder-group-header">
+            <i class="fas fa-gavel" style="color:var(--blue);"></i>
+            <span>Claim Service</span>
+            <span class="owner-tag badge-blue">TUSHAR :7004</span>
+          </div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Controllers/</span><span class="comment">Claim, Support, Admin</span></div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Models/</span><span class="comment">Claim, SupportQuery</span></div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">DTOs/</span><span class="comment">Claim, Support, Admin DTOs</span></div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Repositories/</span><span class="comment">IClaimRepo, ISupportRepo</span></div>
+          <div class="tree-line"><span class="indent">└──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Services/</span><span class="comment">IClaimService, ISupportService</span></div>
+        </div>
+        <!-- Calculator -->
+        <div class="folder-group" style="border-top:3px solid var(--accent);">
+          <div class="folder-group-header">
+            <i class="fas fa-calculator" style="color:var(--accent);"></i>
+            <span>Calculator Service</span>
+            <span class="owner-tag badge-green">SHARED :7005</span>
+          </div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Controllers/</span><span class="comment">CalculatorController</span></div>
+          <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">DTOs/</span><span class="comment">CalculatorDtos</span></div>
+          <div class="tree-line"><span class="indent">└──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Services/</span><span class="comment">ICalculatorService</span></div>
+        </div>
+        <!-- Frontend -->
+        <div class="folder-group" style="border-top:3px solid var(--cyan); grid-column: span 2;">
+          <div class="folder-group-header">
+            <i class="fas fa-desktop" style="color:var(--cyan);"></i>
+            <span>Frontend — MVC Web</span>
+            <span class="owner-tag" style="background:rgba(34,211,238,0.10);color:var(--cyan);">Razor Pages</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0 32px;">
+            <div>
+              <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Controllers/</span></div>
+              <div class="tree-line" style="padding-left:24px;"><span class="indent">├──</span><span class="icon file-icon"><i class="fas fa-file"></i></span><span class="name">HomeController</span></div>
+              <div class="tree-line" style="padding-left:24px;"><span class="indent">├──</span><span class="icon file-icon"><i class="fas fa-file"></i></span><span class="name">AccountController</span></div>
+              <div class="tree-line" style="padding-left:24px;"><span class="indent">├──</span><span class="icon file-icon"><i class="fas fa-file"></i></span><span class="name">PolicyController</span></div>
+              <div class="tree-line" style="padding-left:24px;"><span class="indent">└──</span><span class="icon file-icon"><i class="fas fa-file"></i></span><span class="name">AdminController</span></div>
+            </div>
+            <div>
+              <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Views/</span></div>
+              <div class="tree-line" style="padding-left:24px;"><span class="indent">├──</span><span class="icon file-icon"><i class="fas fa-file"></i></span><span class="name">Login / Register</span></div>
+              <div class="tree-line" style="padding-left:24px;"><span class="indent">├──</span><span class="icon file-icon"><i class="fas fa-file"></i></span><span class="name">InsureProduct</span></div>
+              <div class="tree-line" style="padding-left:24px;"><span class="indent">├──</span><span class="icon file-icon"><i class="fas fa-file"></i></span><span class="name">SubmitClaim</span></div>
+              <div class="tree-line" style="padding-left:24px;"><span class="indent">└──</span><span class="icon file-icon"><i class="fas fa-file"></i></span><span class="name">Admin Dashboard</span></div>
+            </div>
+            <div>
+              <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Services/</span><span class="comment">ApiClient.cs</span></div>
+              <div class="tree-line"><span class="indent">├──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">wwwroot/</span><span class="comment">css, js, images</span></div>
+              <div class="tree-line"><span class="indent">└──</span><span class="icon folder-icon"><i class="fas fa-folder"></i></span><span class="name folder-name">Middleware/</span><span class="comment">JwtCookieMiddleware</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: Identity Service -->
+  <div class="slide" data-index="6">
+    <div class="slide-inner">
+      <div class="svc-header anim-up">
+        <div class="svc-avatar" style="background:rgba(255,92,106,0.10);color:var(--red);">S</div>
+        <div>
+          <div class="slide-tag" style="margin-bottom:2px;">Service 1</div>
+          <h2 class="slide-title" style="margin-bottom:0;">Identity & Notification Service</h2>
+          <div class="svc-meta">
+            <span><i class="fas fa-server"></i> :7001</span>
+            <span><i class="fas fa-database"></i> IdentityDB</span>
+            <span><i class="fas fa-user"></i> Sahil</span>
+          </div>
+        </div>
+      </div>
+      <div class="split anim-up anim-up-d2">
+        <div class="split-col">
+          <h3><i class="fas fa-table" style="color:var(--red);"></i> Entities</h3>
+          <div class="check-item"><i class="fas fa-circle" style="font-size:7px;color:var(--red);"></i> <strong>User</strong> — Id, UserNumber(USR1001), Name, Email, PasswordHash, PhoneNo, PanCard, KycDocumentPath, KycStatus, Role, Balance</div>
+          <div class="check-item"><i class="fas fa-circle" style="font-size:7px;color:var(--red);"></i> <strong>Notification</strong> — Id, UserId(FK), Title, Message, ColorCode, IsRead, RelatedFeature</div>
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+            <span class="badge badge-red">PAN Validation</span>
+            <span class="badge badge-blue">KYC Upload</span>
+            <span class="badge badge-green">JWT Generation</span>
+          </div>
+        </div>
+        <div class="split-col">
+          <h3><i class="fas fa-route" style="color:var(--blue);"></i> Key Endpoints</h3>
+          <div class="ep-list">
+            <div class="ep-item"><span class="ep-method ep-post">POST</span><span class="ep-path">/api/auth/register</span><span class="ep-desc">Public</span></div>
+            <div class="ep-item"><span class="ep-method ep-post">POST</span><span class="ep-path">/api/auth/login</span><span class="ep-desc">Public</span></div>
+            <div class="ep-item"><span class="ep-method ep-post">POST</span><span class="ep-path">/api/auth/admin-login</span><span class="ep-desc">Public</span></div>
+            <div class="ep-item"><span class="ep-method ep-get">GET</span><span class="ep-path">/api/auth/profile</span><span class="ep-desc">JWT</span></div>
+            <div class="ep-item"><span class="ep-method ep-get">GET</span><span class="ep-path">/api/notifications</span><span class="ep-desc">JWT</span></div>
+            <div class="ep-item"><span class="ep-method ep-get">GET</span><span class="ep-path">/api/notifications/unread-count</span><span class="ep-desc">JWT</span></div>
+            <div class="ep-item"><span class="ep-method ep-put">PUT</span><span class="ep-path">/api/notifications/mark-all-read</span><span class="ep-desc">JWT</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: Product Service -->
+  <div class="slide" data-index="7">
+    <div class="slide-inner">
+      <div class="svc-header anim-up">
+        <div class="svc-avatar" style="background:rgba(255,192,69,0.10);color:var(--yellow);">M</div>
+        <div>
+          <div class="slide-tag" style="margin-bottom:2px;">Service 2</div>
+          <h2 class="slide-title" style="margin-bottom:0;">Product & Policy Service</h2>
+          <div class="svc-meta">
+            <span><i class="fas fa-server"></i> :7002</span>
+            <span><i class="fas fa-database"></i> ProductDB</span>
+            <span><i class="fas fa-user"></i> Mayank</span>
+          </div>
+        </div>
+      </div>
+      <div class="split anim-up anim-up-d2">
+        <div class="split-col">
+          <h3><i class="fas fa-table" style="color:var(--yellow);"></i> Entities</h3>
+          <div class="check-item"><i class="fas fa-circle" style="font-size:7px;color:var(--yellow);"></i> <strong>PolicyType</strong> — Name, Category, Description, Icon, IsActive</div>
+          <div class="check-item"><i class="fas fa-circle" style="font-size:7px;color:var(--yellow);"></i> <strong>PolicyTerm</strong> — PolicyTypeId(FK), TermText, DisplayOrder</div>
+          <div class="check-item"><i class="fas fa-circle" style="font-size:7px;color:var(--yellow);"></i> <strong>PolicyRequiredField</strong> — FieldName, FieldType, IsMandatory</div>
+          <div class="check-item"><i class="fas fa-circle" style="font-size:7px;color:var(--yellow);"></i> <strong>UserPolicy</strong> — PolicyNumber(POL2001), Status, Tenure, PackageAmount, DynamicFieldsJson</div>
+          <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">
+            <span class="badge badge-green">Packages: 5K / 10K / 15K</span>
+            <span class="badge badge-blue">Tenure: 12–36 months</span>
+            <span class="badge badge-yellow">Dynamic Forms</span>
+          </div>
+        </div>
+        <div class="split-col">
+          <h3><i class="fas fa-route" style="color:var(--blue);"></i> Key Endpoints</h3>
+          <div class="ep-list">
+            <div class="ep-item"><span class="ep-method ep-get">GET</span><span class="ep-path">/api/policy/types</span><span class="ep-desc">Public</span></div>
+            <div class="ep-item"><span class="ep-method ep-get">GET</span><span class="ep-path">/api/policy/types/{id}</span><span class="ep-desc">Public</span></div>
+            <div class="ep-item"><span class="ep-method ep-post">POST</span><span class="ep-path">/api/policy/purchase</span><span class="ep-desc">JWT</span></div>
+            <div class="ep-item"><span class="ep-method ep-get">GET</span><span class="ep-path">/api/policy/my-policies</span><span class="ep-desc">JWT</span></div>
+            <div class="ep-item"><span class="ep-method ep-get">GET</span><span class="ep-path">/api/policy/pending</span><span class="ep-desc">Admin</span></div>
+            <div class="ep-item"><span class="ep-method ep-put">PUT</span><span class="ep-path">/api/policy/approve/{id}</span><span class="ep-desc">Admin</span></div>
+            <div class="ep-item"><span class="ep-method ep-post">POST</span><span class="ep-path">/api/policy/renew/{id}</span><span class="ep-desc">JWT</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: Payment Service -->
+  <div class="slide" data-index="8">
+    <div class="slide-inner">
+      <div class="svc-header anim-up">
+        <div class="svc-avatar" style="background:rgba(255,138,61,0.10);color:var(--orange);">R</div>
+        <div>
+          <div class="slide-tag" style="margin-bottom:2px;">Service 3</div>
+          <h2 class="slide-title" style="margin-bottom:0;">Payment & Renewal Service</h2>
+          <div class="svc-meta">
+            <span><i class="fas fa-server"></i> :7003</span>
+            <span><i class="fas fa-database"></i> PaymentDB</span>
+            <span><i class="fas fa-user"></i> Rajiv</span>
+          </div>
+        </div>
+      </div>
+      <div class="split anim-up anim-up-d2">
+        <div class="split-col">
+          <h3><i class="fas fa-table" style="color:var(--orange);"></i> Payment Entity</h3>
+          <div class="check-item"><i class="fas fa-circle" style="font-size:7px;color:var(--orange);"></i> <strong>PaymentNumber</strong> — PAY5001 format (auto-generated)</div>
+          <div class="check-item"><i class="fas fa-circle" style="font-size:7px;color:var(--orange);"></i> <strong>UserId / UserPolicyId</strong> — Linked references</div>
+          <div class="check-item"><i class="fas fa-circle" style="font-size:7px;color:var(--orange);"></i> <strong>Amount</strong> — decimal(18,2)</div>
+          <div class="check-item"><i class="fas fa-circle" style="font-size:7px;color:var(--orange);"></i> <strong>Status</strong> — Pending → Success / Failed</div>
+          <div class="check-item"><i class="fas fa-circle" style="font-size:7px;color:var(--orange);"></i> <strong>PaymentMethod</strong> — Card, UPI, NetBanking</div>
+          <div class="check-item"><i class="fas fa-circle" style="font-size:7px;color:var(--orange);"></i> <strong>TransactionId</strong> — From gateway</div>
+          <div style="margin-top:14px;"><span class="badge badge-yellow">Mock Gateway (swappable for real)</span></div>
+        </div>
+        <div class="split-col">
+          <h3><i class="fas fa-route" style="color:var(--blue);"></i> Endpoints</h3>
+          <div class="ep-list">
+            <div class="ep-item"><span class="ep-method ep-post">POST</span><span class="ep-path">/api/payment/initiate</span><span class="ep-desc">JWT</span></div>
+            <div class="ep-item"><span class="ep-method ep-get">GET</span><span class="ep-path">/api/payment/history</span><span class="ep-desc">JWT</span></div>
+          </div>
+          <h3 style="margin-top:24px;"><i class="fas fa-cogs" style="color:var(--accent);"></i> Gateway Interface</h3>
+          <div class="code-block">
+<span class="kw">public interface</span> <span class="str">IPaymentGateway</span>
+{
+    Task&lt;PaymentResult&gt; <span class="str">ProcessAsync</span>(
+        decimal amount,
+        string paymentMethod);
+}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: Claim Service -->
+  <div class="slide" data-index="9">
+    <div class="slide-inner">
+      <div class="svc-header anim-up">
+        <div class="svc-avatar" style="background:rgba(78,160,255,0.10);color:var(--blue);">T</div>
+        <div>
+          <div class="slide-tag" style="margin-bottom:2px;">Service 4</div>
+          <h2 class="slide-title" style="margin-bottom:0;">Claim, Support & Admin Service</h2>
+          <div class="svc-meta">
+            <span><i class="fas fa-server"></i> :7004</span>
+            <span><i class="fas fa-database"></i> ClaimDB</span>
+            <span><i class="fas fa-user"></i> Tushar</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid-3 anim-up anim-up-d2" style="margin-top:22px;">
+        <div class="card">
+          <div class="card-icon" style="background:rgba(78,160,255,0.10);color:var(--blue);"><i class="fas fa-gavel"></i></div>
+          <h3>Claims</h3>
+          <p>ClaimNumber (CLM4001), Description, MaturityAmount, Status (Pending/Approved/Denied), up to 12 document uploads. Approval credits user balance.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="background:rgba(176,140,255,0.10);color:var(--purple);"><i class="fas fa-headset"></i></div>
+          <h3>Support Queries</h3>
+          <p>TicketNumber (SUP3001), Subject, Description, Status (Pending → InProgress → Resolved), optional attachment, admin response.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="background:rgba(0,224,158,0.10);color:var(--accent);"><i class="fas fa-chart-line"></i></div>
+          <h3>Admin Dashboard</h3>
+          <p>Aggregated stats: total users, active policies, pending claims, open tickets, total revenue. User list with policy counts.</p>
+        </div>
+      </div>
+      <div class="ep-list anim-up anim-up-d3" style="margin-top:18px;">
+        <div class="ep-item"><span class="ep-method ep-post">POST</span><span class="ep-path">/api/claim/submit/{policyId}</span><span class="ep-desc">JWT + Multipart</span></div>
+        <div class="ep-item"><span class="ep-method ep-put">PUT</span><span class="ep-path">/api/claim/update/{claimId}</span><span class="ep-desc">Admin</span></div>
+        <div class="ep-item"><span class="ep-method ep-post">POST</span><span class="ep-path">/api/support/submit</span><span class="ep-desc">JWT</span></div>
+        <div class="ep-item"><span class="ep-method ep-get">GET</span><span class="ep-path">/api/admin/dashboard</span><span class="ep-desc">Admin</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: Calculator Service -->
+  <div class="slide" data-index="10">
+    <div class="slide-inner" style="text-align:center;">
+      <div class="slide-tag anim-up">Service 5</div>
+      <h2 class="slide-title anim-up anim-up-d1">Calculator Service</h2>
+      <p class="slide-subtitle anim-up anim-up-d2" style="margin:0 auto 32px;">Shared utility service for premium estimation — no database required, pure computation.</p>
+      <div class="split anim-up anim-up-d3" style="max-width:860px;margin-left:auto;margin-right:auto;text-align:left;">
+        <div class="split-col">
+          <h3><i class="fas fa-arrow-right-to-bracket" style="color:var(--accent);"></i> Input Parameters</h3>
+          <div class="check-item"><i class="fas fa-check"></i> Age (18–70)</div>
+          <div class="check-item"><i class="fas fa-check"></i> PackageAmount (5,000 – 15,000)</div>
+          <div class="check-item"><i class="fas fa-check"></i> Tenure (12–36 months)</div>
+          <div class="check-item"><i class="fas fa-check"></i> PolicyCategory (optional)</div>
+        </div>
+        <div class="split-col">
+          <h3><i class="fas fa-arrow-right-from-bracket" style="color:var(--yellow);"></i> Output Results</h3>
+          <div class="check-item"><i class="fas fa-check"></i> EstimatedPremium</div>
+          <div class="check-item"><i class="fas fa-check"></i> TotalInvestment</div>
+          <div class="check-item"><i class="fas fa-check"></i> MaturityAmount</div>
+          <div class="check-item"><i class="fas fa-check"></i> Breakup (text description)</div>
+        </div>
+      </div>
+      <div class="ep-list anim-up anim-up-d4" style="max-width:560px;margin:24px auto 0;">
+        <div class="ep-item"><span class="ep-method ep-post">POST</span><span class="ep-path">/api/calculator/estimate</span><span class="ep-desc">Public — No Auth</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 12: API Gateway -->
+  <div class="slide" data-index="11">
+    <div class="slide-inner">
+      <div class="slide-tag anim-up">Infrastructure</div>
+      <h2 class="slide-title anim-up anim-up-d1">API Gateway & Frontend MVC</h2>
+      <div class="split anim-up anim-up-d2">
+        <div class="split-col">
+          <h3><i class="fas fa-shield-halved" style="color:var(--accent);"></i> Ocelot Routing</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Route Prefix</th><th>Downstream</th><th>Port</th></tr></thead>
+              <tbody>
+                <tr><td>/api/auth/*</td><td>IdentityService</td><td>7001</td></tr>
+                <tr><td>/api/policy/*</td><td>ProductService</td><td>7002</td></tr>
+                <tr><td>/api/payment/*</td><td>PaymentService</td><td>7003</td></tr>
+                <tr><td>/api/claim/*</td><td>ClaimService</td><td>7004</td></tr>
+                <tr><td>/api/support/*</td><td>ClaimService</td><td>7004</td></tr>
+                <tr><td>/api/admin/*</td><td>ClaimService</td><td>7004</td></tr>
+                <tr><td>/api/calculator/*</td><td>CalculatorService</td><td>7005</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="split-col">
+          <h3><i class="fas fa-desktop" style="color:var(--cyan);"></i> MVC Frontend</h3>
+          <div class="check-item"><i class="fas fa-check"></i> <strong>ApiClient.cs</strong> — HTTP client with JWT injection from session</div>
+          <div class="check-item"><i class="fas fa-check"></i> <strong>_Layout.cshtml</strong> — Calculator widget + notification bell icon</div>
+          <div class="check-item"><i class="fas fa-check"></i> <strong>site.js</strong> — Notification polling + calculator AJAX calls</div>
+          <div class="check-item"><i class="fas fa-check"></i> <strong>policy-dynamic-form.js</strong> — Dynamic form rendering based on policy type</div>
+          <div class="check-item"><i class="fas fa-check"></i> <strong>JwtCookieMiddleware</strong> — Token persistence via session store</div>
+          <div style="margin-top:14px;display:flex;gap:8px;">
+            <span class="badge badge-blue">Razor Pages</span>
+            <span class="badge badge-green">Session JWT</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 13: Database Schema -->
+  <div class="slide" data-index="12">
+    <div class="slide-inner">
+      <div class="slide-tag anim-up">Data Layer</div>
+      <h2 class="slide-title anim-up anim-up-d1">Database Schema & Relationships</h2>
+      <div class="grid-4 anim-up anim-up-d2">
+        <div class="card" style="border-top:3px solid var(--red);">
+          <h3 style="color:var(--red);font-size:14px;margin-bottom:10px;">IdentityDB</h3>
+          <div style="font-size:14px;color:var(--fg2);line-height:1.8;">
+            <div><strong>Users</strong> — Id, UserNumber, Name, Email, PasswordHash, PhoneNo, PanCard, KycStatus, Role, Balance</div>
+            <div><strong>Notifications</strong> — Id, UserId(FK), Title, Message, ColorCode, IsRead</div>
+          </div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--yellow);">
+          <h3 style="color:var(--yellow);font-size:14px;margin-bottom:10px;">ProductDB</h3>
+          <div style="font-size:14px;color:var(--fg2);line-height:1.8;">
+            <div><strong>PolicyTypes</strong> — Id, Name, Category</div>
+            <div><strong>PolicyTerms</strong> — PolicyTypeId(FK)</div>
+            <div><strong>RequiredFields</strong> — FieldName, Type</div>
+            <div><strong>UserPolicies</strong> — PolicyNumber, Status, Tenure</div>
+          </div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--orange);">
+          <h3 style="color:var(--orange);font-size:14px;margin-bottom:10px;">PaymentDB</h3>
+          <div style="font-size:14px;color:var(--fg2);line-height:1.8;">
+            <div><strong>Payments</strong> — PaymentNumber, UserId, UserPolicyId, Amount, Status, Method, TransactionId</div>
+          </div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--blue);">
+          <h3 style="color:var(--blue);font-size:14px;margin-bottom:10px;">ClaimDB</h3>
+          <div style="font-size:14px;color:var(--fg2);line-height:1.8;">
+            <div><strong>Claims</strong> — ClaimNumber, UserPolicyId, UserId, ClaimStatus, MaturityAmount</div>
+            <div><strong>SupportQueries</strong> — TicketNumber, UserId, Subject, Status</div>
+          </div>
+        </div>
+      </div>
+      <div class="anim-up anim-up-d3" style="margin-top:22px;">
+        <div class="rel-line"><span class="entity">Users</span> <span class="arrow-r"><i class="fas fa-arrow-right"></i></span> Notifications, UserPolicies, Payments, SupportQueries</div>
+        <div class="rel-line"><span class="entity">PolicyTypes</span> <span class="arrow-r"><i class="fas fa-arrow-right"></i></span> PolicyTerms, PolicyRequiredFields, UserPolicies</div>
+        <div class="rel-line"><span class="entity">UserPolicies</span> <span class="arrow-r"><i class="fas fa-arrow-right"></i></span> Payments, Claims</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 14: API Endpoints Summary -->
+  <div class="slide" data-index="13">
+    <div class="slide-inner">
+      <div class="slide-tag anim-up">API Reference</div>
+      <h2 class="slide-title anim-up anim-up-d1">Endpoints Summary</h2>
+      <div class="grid-3 anim-up anim-up-d2">
+        <div class="card" style="border-left:4px solid var(--accent);">
+          <h3 style="font-size:15px;color:var(--accent);margin-bottom:12px;">Public (No Auth)</h3>
+          <div style="font-size:14px;color:var(--fg2);line-height:2.2;">
+            POST /api/auth/register<br>
+            POST /api/auth/login<br>
+            POST /api/auth/admin-login<br>
+            POST /api/calculator/estimate<br>
+            GET /api/policy/types<br>
+            GET /api/policy/types/{id}
+          </div>
+        </div>
+        <div class="card" style="border-left:4px solid var(--blue);">
+          <h3 style="font-size:15px;color:var(--blue);margin-bottom:12px;">Authenticated (JWT)</h3>
+          <div style="font-size:14px;color:var(--fg2);line-height:2.2;">
+            GET/PUT /api/auth/profile<br>
+            GET/PUT /api/notifications/*<br>
+            GET /api/policy/my-policies<br>
+            POST /api/policy/purchase<br>
+            POST /api/payment/initiate<br>
+            GET /api/payment/history<br>
+            POST /api/claim/submit/{id}<br>
+            POST /api/support/submit
+          </div>
+        </div>
+        <div class="card" style="border-left:4px solid var(--red);">
+          <h3 style="font-size:15px;color:var(--red);margin-bottom:12px;">Admin Only</h3>
+          <div style="font-size:14px;color:var(--fg2);line-height:2.2;">
+            GET /api/auth/users<br>
+            POST/PUT/DEL /api/policy/types/*<br>
+            GET /api/policy/pending<br>
+            PUT /api/policy/approve/{id}<br>
+            GET/PUT /api/claim/*<br>
+            GET/PUT /api/support/*<br>
+            GET /api/admin/dashboard<br>
+            GET /api/admin/users<br>
+            GET /api/admin/transactions
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 15: File Upload & Notifications -->
+  <div class="slide" data-index="14">
+    <div class="slide-inner">
+      <div class="slide-tag anim-up">Integration</div>
+      <h2 class="slide-title anim-up anim-up-d1">File Uploads & Notifications</h2>
+      <div class="split anim-up anim-up-d2">
+        <div class="split-col">
+          <h3><i class="fas fa-upload" style="color:var(--orange);"></i> Upload Rules</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+              <tbody>
+                <tr><td>Max File Size</td><td><strong>5 MB</strong> per file</td></tr>
+                <tr><td>Allowed Types</td><td>.png, .jpg, .jpeg, .pdf</td></tr>
+                <tr><td>Naming</td><td><code style="background:var(--card3);padding:2px 8px;border-radius:4px;">{guid}_{name}.{ext}</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="margin-top:16px;font-size:14px;color:var(--fg2);line-height:2;">
+            <div><i class="fas fa-folder" style="color:var(--yellow);margin-right:6px;"></i><strong>KYC:</strong> /uploads/kyc/</div>
+            <div><i class="fas fa-folder" style="color:var(--yellow);margin-right:6px;"></i><strong>Claims:</strong> /uploads/claim-documents/ <span class="badge badge-blue" style="font-size:11px;">up to 12 files</span></div>
+            <div><i class="fas fa-folder" style="color:var(--yellow);margin-right:6px;"></i><strong>Support:</strong> /uploads/support-attachments/ <span class="badge badge-purple" style="font-size:11px;">1 file</span></div>
+          </div>
+        </div>
+        <div class="split-col">
+          <h3><i class="fas fa-bell" style="color:var(--yellow);"></i> Notification Events</h3>
+          <div class="notif-timeline">
+            <div class="notif-item">
+              <div class="notif-dot yellow"></div>
+              <div><div class="notif-text"><strong>Policy Purchased</strong> — Pending admin approval</div><div class="notif-who">Called by Mayank</div></div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-dot green"></div>
+              <div><div class="notif-text"><strong>Policy Approved</strong> — Now active</div><div class="notif-who">Called by Mayank</div></div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-dot red"></div>
+              <div><div class="notif-text"><strong>Policy Rejected</strong> — Reason included</div><div class="notif-who">Called by Mayank</div></div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-dot yellow"></div>
+              <div><div class="notif-text"><strong>Claim Submitted</strong> — Under review</div><div class="notif-who">Called by Tushar</div></div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-dot green"></div>
+              <div><div class="notif-text"><strong>Claim Approved</strong> — Amount credited to balance</div><div class="notif-who">Called by Tushar</div></div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-dot blue"></div>
+              <div><div class="notif-text"><strong>Support Updated</strong> — Status changed</div><div class="notif-who">Called by Tushar</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 16: Testing & PR -->
+  <div class="slide" data-index="15">
+    <div class="slide-inner">
+      <div class="slide-tag anim-up">Quality</div>
+      <h2 class="slide-title anim-up anim-up-d1">Testing & Code Review</h2>
+      <div class="split anim-up anim-up-d2">
+        <div class="split-col">
+          <h3><i class="fas fa-flask" style="color:var(--accent);"></i> Testing Targets</h3>
+          <div class="stat-row" style="margin-top:0;">
+            <div class="stat-box"><div class="stat-num">70%</div><div class="stat-label">Unit Coverage</div></div>
+            <div class="stat-box"><div class="stat-num">9</div><div class="stat-label">Integration Flows</div></div>
+          </div>
+          <div style="margin-top:16px;font-size:14px;color:var(--fg2);line-height:1.9;">
+            <strong style="color:var(--fg);">Unit Tests:</strong> AuthService, NotificationService, PolicyService, PaymentService, ClaimService, SupportService<br>
+            <strong style="color:var(--fg);">Integration Tests:</strong> Register → Login → Profile, Purchase → Approve, Claim → Balance credit, Support → Notification
+          </div>
+        </div>
+        <div class="split-col">
+          <h3><i class="fas fa-code-branch" style="color:var(--purple);"></i> PR Checklist</h3>
+          <div class="check-item"><i class="fas fa-check"></i> All tests pass (<code style="background:var(--card3);padding:2px 6px;border-radius:4px;">dotnet test</code>)</div>
+          <div class="check-item"><i class="fas fa-check"></i> No warnings (<code style="background:var(--card3);padding:2px 6px;border-radius:4px;">dotnet build</code>)</div>
+          <div class="check-item"><i class="fas fa-check"></i> No try-catch in controllers</div>
+          <div class="check-item"><i class="fas fa-check"></i> All methods use async/await</div>
+          <div class="check-item"><i class="fas fa-check"></i> File uploads have size + type validation</div>
+          <div class="check-item"><i class="fas fa-check"></i> No business logic in controllers</div>
+          <div class="check-item"><i class="fas fa-check"></i> DTOs for all I/O (no raw entities)</div>
+          <div class="check-item"><i class="fas fa-check"></i> [Authorize] attributes present</div>
+          <div class="check-item"><i class="fas fa-check"></i> Notifications triggered where needed</div>
+          <div class="check-item"><i class="fas fa-check"></i> PR title: <code style="background:var(--card3);padding:2px 6px;border-radius:4px;">feature/&lt;module&gt;-&lt;desc&gt;</code></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 17: Q&A -->
+  <div class="slide" data-index="16">
+    <div class="slide-inner" style="text-align:center;">
+      <div class="qa-icon anim-up"><i class="fas fa-question"></i></div>
+      <h2 class="slide-title anim-up anim-up-d1" style="font-size:clamp(38px,5.5vw,64px);">Questions & Discussion</h2>
+      <p class="slide-subtitle anim-up anim-up-d2" style="margin:0 auto 40px;">
+        Insure Trust — Complete Insurance Management Platform<br>
+        Built with .NET 8 Microservices, SQL Server, Ocelot Gateway & MVC Frontend
+      </p>
+      <div class="anim-up anim-up-d3" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+        <span class="badge badge-green" style="font-size:14px;padding:7px 18px;">5 Microservices</span>
+        <span class="badge badge-blue" style="font-size:14px;padding:7px 18px;">30+ Endpoints</span>
+        <span class="badge badge-yellow" style="font-size:14px;padding:7px 18px;">4 Databases</span>
+        <span class="badge badge-purple" style="font-size:14px;padding:7px 18px;">70% Test Coverage</span>
+      </div>
+      <p class="anim-up anim-up-d4" style="margin-top:44px;font-size:14px;color:var(--muted);">Team: Sahil, Mayank, Rajiv, Tushar, Aaroh, Hritik — Version 3.0 | April 2026</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const progressBar = document.getElementById('progressBar');
+  const currentNum = document.getElementById('currentNum');
+  const totalNum = document.getElementById('totalNum');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const dotsNav = document.getElementById('dotsNav');
+
+  totalNum.textContent = total;
+
+  for (let i = 0; i < total; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+    dot.addEventListener('click', () => goTo(i));
+    dotsNav.appendChild(dot);
+  }
+
+  function goTo(index) {
+    if (index < 0 || index >= total || index === current) return;
+    const direction = index > current ? 1 : -1;
+    const oldSlide = slides[current];
+    const newSlide = slides[index];
+
+    // Reset animations on old slide
+    oldSlide.querySelectorAll('.anim-up').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(24px)';
+      el.style.animation = 'none';
+    });
+
+    oldSlide.classList.remove('active');
+    if (direction > 0) oldSlide.classList.add('exit-left');
+    else { oldSlide.style.transform = 'translateX(70px)'; oldSlide.style.opacity = '0'; }
+
+    // Prepare new slide
+    newSlide.style.transform = direction > 0 ? 'translateX(70px)' : 'translateX(-70px)';
+    newSlide.style.opacity = '0';
+    newSlide.classList.remove('exit-left');
+    void newSlide.offsetWidth;
+
+    // Re-trigger animations
+    newSlide.querySelectorAll('.anim-up').forEach(el => {
+      el.style.animation = '';
+      el.style.opacity = '';
+      el.style.transform = '';
+    });
+
+    newSlide.classList.add('active');
+    newSlide.style.transform = '';
+    newSlide.style.opacity = '';
+
+    setTimeout(() => {
+      oldSlide.classList.remove('exit-left');
+      oldSlide.style.transform = '';
+      oldSlide.style.opacity = '';
+    }, 500);
+
+    current = index;
+    updateUI();
+  }
+
+  function updateUI() {
+    progressBar.style.width = ((current + 1) / total * 100) + '%';
+    currentNum.textContent = current + 1;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === total - 1;
+    dotsNav.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+  }
+
+  prevBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => goTo(current + 1));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); goTo(current - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    else if (e.key === 'End') { e.preventDefault(); goTo(total - 1); }
+  });
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    const diff = touchStartX - e.changedTouches[0].screenX;
+    if (Math.abs(diff) > 50) goTo(current + (diff > 0 ? 1 : -1));
+  }, { passive: true });
+
+  updateUI();
+</script>
+</body>
+</html>

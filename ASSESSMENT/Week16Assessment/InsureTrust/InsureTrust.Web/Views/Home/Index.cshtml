@@ -1,0 +1,41 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Welcome";
+}
+
+<div class="home-hero">
+    <div class="hero-noise"></div>
+    <div class="hero-content">
+        <div class="hero-tag">⬡ India's #1 Insurance Platform</div>
+        <div class="hero-logo">Insure<span>Trust</span></div>
+        <p class="hero-sub">Protect what matters most — your family, your health, your future. Bold, fast, and radically transparent insurance management.</p>
+        <div class="hero-btns">
+            <a href="@Url.Action("Register","Account")" class="btn-hero-primary">
+                Get Started Free →
+            </a>
+            <a href="@Url.Action("Login","Account")" class="btn-hero-secondary">
+                Sign In
+            </a>
+            <a href="@Url.Action("AdminLogin","Account")" class="btn-hero-secondary" style="border-color:rgba(255,214,10,.5);color:var(--yellow)">
+                Admin Portal ⬡
+            </a>
+        </div>
+    </div>
+    <div class="hero-features">
+        <div class="hero-feat">
+            <div class="hero-feat-icon">🛡️</div>
+            <div class="hero-feat-title">7 Policy Types</div>
+            <div class="hero-feat-desc">Personal &amp; Business coverage</div>
+        </div>
+        <div class="hero-feat">
+            <div class="hero-feat-icon">⚡</div>
+            <div class="hero-feat-title">Instant Claims</div>
+            <div class="hero-feat-desc">Fast approval workflow</div>
+        </div>
+        <div class="hero-feat">
+            <div class="hero-feat-icon">🔒</div>
+            <div class="hero-feat-title">Secure &amp; Compliant</div>
+            <div class="hero-feat-desc">JWT secured, bank-grade</div>
+        </div>
+    </div>
+</div>

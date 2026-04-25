@@ -1,0 +1,111 @@
+@model List<InsureTrust.Web.Models.PolicyViewModel>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "My Policies";
+}
+
+<div class="page-header">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem">
+        <div>
+            <h1>My Policies</h1>
+            <p>Manage all your insurance policies in one place</p>
+        </div>
+        <a href="@Url.Action("Buy")" class="btn btn-primary">+ Buy New Policy</a>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card">
+        <div class="empty-state">
+            <span class="empty-state-icon">🛡️</span>
+            <div class="empty-state-title">No Policies Yet</div>
+            <div class="empty-state-sub">Start protecting yourself today</div>
+            <a href="@Url.Action("Buy")" class="btn btn-primary">Browse Insurance Plans →</a>
+        </div>
+    </div>
+}
+else
+{
+    @foreach (var p in Model)
+    {
+        <div class="policy-row" style="margin-bottom:14px">
+            <div class="policy-row-left">
+                <div class="policy-icon-badge">
+                    @GetIcon(p.Icon)
+                </div>
+                <div>
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                        <span class="policy-number">@p.PolicyNumber</span>
+                        <span class="badge badge-@p.Status.ToLower()">@p.Status</span>
+                    </div>
+                    <div class="policy-meta">@p.PolicyTypeName · @p.Category · ₹@p.PackageAmount.ToString("N0")/mo · @p.Tenure months</div>
+                    <div style="font-size:12px;color:var(--gray-400);margin-top:2px;font-weight:600">
+                        Purchased: @p.PurchaseDate.ToString("dd MMM yyyy") · Expires: @p.ExpiryDate.ToString("dd MMM yyyy") · @p.DaysLeft days remaining
+                    </div>
+                    @if (!string.IsNullOrEmpty(p.AdminRemarks))
+                    {
+                        <div style="font-size:12px;color:var(--red);margin-top:4px;font-weight:700;font-family:'Space Mono',monospace">⚠ Admin note: @p.AdminRemarks</div>
+                    }
+                </div>
+            </div>
+            <div class="policy-row-right">
+                @if (p.Status == "Active")
+                {
+                    <form method="post" asp-action="Renew" asp-route-id="@p.Id" style="display:inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-success">↺ Renew</button>
+                    </form>
+                    <button class="btn btn-sm" onclick="toggleEditModal(@p.Id, @p.Tenure, @p.PackageAmount)">✏️ Edit</button>
+                }
+                <form method="post" asp-action="Delete" asp-route-id="@p.Id" id="del-@p.Id">
+                    @Html.AntiForgeryToken()
+                </form>
+                <button class="btn btn-sm btn-danger" onclick="confirmDelete('del-@p.Id','Delete policy @p.PolicyNumber? This cannot be undone.')">🗑 Delete</button>
+            </div>
+        </div>
+    }
+}
+
+<!-- Edit Modal -->
+<div id="editModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center">
+    <div class="card" style="width:440px;position:relative;box-shadow:var(--shadow-xl)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:2px solid var(--black)">
+            <div class="card-title">Edit Policy</div>
+            <button onclick="closeModal('editModal')" style="background:var(--yellow);border:var(--border);cursor:pointer;font-size:18px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700">×</button>
+        </div>
+        <form method="post" asp-action="Edit">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="editPolicyId" />
+            <div class="form-group">
+                <label class="form-label">Tenure (months)</label>
+                <select class="form-control" name="tenure" id="editTenure">
+                    <option value="12">12 months</option>
+                    <option value="24">24 months</option>
+                    <option value="36">36 months</option>
+                    <option value="48">48 months</option>
+                    <option value="60">60 months</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Package Amount</label>
+                <select class="form-control" name="packageAmount" id="editPackage">
+                    <option value="5000">₹5,000 / month</option>
+                    <option value="10000">₹10,000 / month</option>
+                    <option value="15000">₹15,000 / month</option>
+                </select>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:1.25rem">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="button" class="btn" onclick="closeModal('editModal')">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@functions {
+    string GetIcon(string icon) => icon switch {
+        "shield" => "🛡️", "heart" => "❤️", "car" => "🚗", "home" => "🏠",
+        "building" => "🏢", "users" => "👥", "settings" => "⚙️", _ => "📋"
+    };
+}

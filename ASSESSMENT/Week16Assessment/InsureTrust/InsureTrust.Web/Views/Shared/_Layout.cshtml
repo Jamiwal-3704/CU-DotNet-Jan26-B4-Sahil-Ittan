@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — Insure Trust</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" />
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+@{
+    var isLoggedIn = Context.Session.GetString("Token") != null;
+    var userName = Context.Session.GetString("UserName") ?? "";
+    var role = Context.Session.GetString("Role") ?? "";
+    var initials = string.Join("", userName.Split(' ').Select(w => w.Length > 0 ? w[0].ToString() : "")).ToUpper();
+    if (initials.Length > 2) initials = initials[..2];
+}
+
+@if (isLoggedIn)
+{
+<nav class="navbar">
+    <a class="nav-brand" href="@(role == "Admin" ? Url.Action("Dashboard","Admin") : Url.Action("Index","Dashboard"))">
+        <span class="brand-shield">⬡</span>
+        <span class="brand-text-light">Insure<span style="color:var(--yellow)">Trust</span></span>
+        <span class="brand-text-dark" style="color:var(--yellow)">Insure<span style="color:#f0f0e8">Trust</span></span>
+    </a>
+    <div class="nav-links">
+        @if (role == "Admin")
+        {
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" ? "active" : "")" href="@Url.Action("Dashboard","Admin")">Dashboard</a>
+            <a class="nav-link" href="@Url.Action("CreatePolicyType","Admin")">+ New Policy Type</a>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Support" ? "active" : "")" href="@Url.Action("Dashboard","Admin")#support">Support</a>
+        }
+        else
+        {
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")" href="@Url.Action("Index","Dashboard")">Dashboard</a>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Policy" ? "active" : "")" href="@Url.Action("Index","Policy")">My Policies</a>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Claim" ? "active" : "")" href="@Url.Action("Index","Claim")">Claims</a>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Support" ? "active" : "")" href="@Url.Action("Index","Support")">Support</a>
+        }
+    </div>
+    <div class="nav-right">
+        <!-- THEME TOGGLE -->
+        <button class="theme-toggle" id="themeToggle" title="Toggle Light / Dark">
+            <span class="t-icon t-sun" aria-hidden="true">☀️</span>
+            <span class="t-icon t-moon" aria-hidden="true">🌙</span>
+        </button>
+
+        <a href="@Url.Action("Index","NotificationMvc")" class="bell-btn" title="Notifications">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            @if (ViewBag.UnreadCount != null && (int)ViewBag.UnreadCount > 0)
+            {
+                <span class="notif-badge">@ViewBag.UnreadCount</span>
+            }
+        </a>
+        <div class="user-chip">
+            <div class="avatar">@initials</div>
+            <span>@userName.Split(' ').First()</span>
+        </div>
+        <a href="@Url.Action("Logout","Account")" class="btn-logout">Sign out</a>
+    </div>
+</nav>
+}
+else
+{
+    <!-- Theme toggle for public (non-logged) pages — fixed corner button -->
+    <button class="theme-toggle" id="themeToggle"
+        title="Toggle Light / Dark"
+        style="position:fixed;top:14px;right:14px;z-index:999;border-color:rgba(255,255,255,0.25)">
+        <span class="t-icon t-sun" aria-hidden="true">☀️</span>
+        <span class="t-icon t-moon" aria-hidden="true">🌙</span>
+    </button>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="flash flash-success">✓ @TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="flash flash-error">✗ @TempData["Error"]</div>
+}
+
+<main class="@(isLoggedIn ? "main-content" : "")">
+    @RenderBody()
+</main>
+
+@if (isLoggedIn)
+{
+<footer class="site-footer">
+    <span>© 2026 Insure Trust / All rights reserved</span>
+    <span>🔒 256-bit Encrypted</span>
+</footer>
+}
+
+<script src="~/js/site.js"></script>
+@RenderSection("Scripts", required: false)
+</body>
+</html>

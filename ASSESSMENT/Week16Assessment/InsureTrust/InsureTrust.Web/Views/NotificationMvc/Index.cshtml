@@ -1,0 +1,68 @@
+@model List<InsureTrust.Web.Models.NotificationViewModel>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Notifications";
+}
+
+<div class="page-header">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem">
+        <div>
+            <h1>Notifications</h1>
+            <p>All your account activity and updates</p>
+        </div>
+        @if (Model.Any(n => !n.IsRead))
+        {
+            <form method="post" asp-action="MarkAllRead">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-sm">✓ Mark all as read</button>
+            </form>
+        }
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card">
+        <div class="empty-state">
+            <span class="empty-state-icon">🔔</span>
+            <div class="empty-state-title">No Notifications</div>
+            <div class="empty-state-sub">You're all caught up!</div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="notif-list">
+            @foreach (var n in Model)
+            {
+                <div class="notif-item @(!n.IsRead ? "unread" : "")">
+                    <div class="notif-dot dot-@n.ColorCode"></div>
+                    <div style="flex:1">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+                            <div class="notif-title">@n.Title</div>
+                            <div style="display:flex;align-items:center;gap:8px">
+                                @if (!n.IsRead)
+                                {
+                                    <span style="width:10px;height:10px;background:var(--yellow);display:inline-block;border:2px solid var(--black)"></span>
+                                    <form method="post" asp-action="MarkRead" asp-route-id="@n.Id" style="display:inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-xs">Mark read</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span style="font-size:11px;color:var(--gray-400);font-family:'Space Mono',monospace;font-weight:700;text-transform:uppercase">Read</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="notif-msg">@n.Message</div>
+                        <div class="notif-meta">
+                            @n.CreatedAt.ToString("dd MMM yyyy, HH:mm") · @n.RelatedFeature
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
